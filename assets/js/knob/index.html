@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQuery Knob demo</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+        <script src="js/jquery.knob.js"></script>
+        <script src="js/knob.js"></script>
+        <link rel='stylesheet' id='main-css'  href='http://www.jqueryajaxphp.com/data/css/main.css' type='text/css' media='all' />
+        <link rel='stylesheet' href='css/style.css' type='text/css' media='all' />
+    </head>
+    <body>
+        
+
+<div id="demo-header"></div>
+<div id="container">
+ 		<div class="info">
+        Set a value either positive or negative and change to see animation...
+        </div>
+
+               <input type="hidden" id="preval" value="" />
+               <input type="text" id="newval" value="" /> &nbsp; 
+               <input type="button" id="change" value="Change" />
+                       <div style="clear:both"></div>
+
+        <div class="demo">
+            <p>Disable display input</p>          
+            <input class="knob" data-width="100" data-displayInput=false value="35">
+        </div>
+        <div class="demo">
+            <p>'cursor' mode</p>           
+            <input class="knob" data-width="150" data-cursor=true data-fgColor="#222222" data-thickness=.3 value="29">
+        </div>
+        <div class="demo" >
+            <p>Display previous value</p>           
+            <input class="knob" data-width="200" data-min="-100" data-displayPrevious=true value="44">
+        </div>
+        <div style="clear:both"></div>
+        <div class="demo">
+            <p>Angle offset</p>
+            <input class="knob" data-angleOffset=90 data-linecap=round value="35">
+        </div>
+        <div class="demo">
+            <p>Angle offset and arc</p>
+            <input class="knob" data-angleOffset=-125 data-angleArc=250 data-fgColor="#66EE66" value="35">
+        </div>
+        <div class="demo" >
+            <p>5-digit values, step 1000</p>
+            <input class="knob" data-min="-15000" data-displayPrevious=true data-max="15000" data-step="1000" value="-11000">
+        </div>
+
+</div>
+   
+   
+   <footer>
+            <a  href="http://www.jqueryajaxphp.com/dynamically-animate-jquery-knob">Tutorial: Dynamically animate jQuery knob</a>
+   </footer>
+ </body>
+</html>
