@@ -40,6 +40,7 @@
                 $(selector).chosen(config[selector]);
             }
         </script>
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -85,12 +86,9 @@
                 //padding: 0;
             }
         </style>
-
     </head>
-
     <body class="skin-blue sidebar-collapse">
         <div class="wrapper">
-
             <!-- Main Header -->
             <header class="main-header">
                 <?php
@@ -122,7 +120,7 @@
                                 <p>
                                     <?php $CI = & get_instance(); ?>
                                     <span ><b><?php echo isset($CI->Full_Name) ? $CI->Full_Name : ''; ?></b>&nbsp;</span>
-                                    <a class="text-aqua" href="<?php echo site_url('User/logout'); ?>">
+                                    <a class="text-aqua" href="#" data-toggle="modal" data-target=".logout">
                                         <span style="font-size: 20px" class="fa fa-power-off">  </span>
                                     </a>
                                 </p>
@@ -141,36 +139,31 @@
                         </li>
                         <li>
                             <a href="<?php echo site_url('User/dashboard'); ?>">
-                                <i class="ion ion-ios-people-outline"></i>
+                                <i class="fa fa-dashboard"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Customer</span> <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-user"></i> <span>Customer</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu" style="display: none;">
 
                                 <li class=""><a href="<?php echo site_url('User/Doctorlist'); ?>"><i class="fa fa-circle-o"></i>  Doctors</a></li>
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');       ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
+                                <li class=""><a href="<?php //echo site_url('User/view_doctor');           ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Profiling</span> <i class="fa fa-angle-left pull-right"></i>
+                        <li>
+                            <a href="<?php echo site_url('User/Doctorlist2'); ?>">
+                                <i class="fa fa-database"></i>
+                                <span>Profiling</span>
                             </a>
-                            <ul class="treeview-menu" style="display: none;">
-
-                                <li class=""><a href="<?php echo site_url('User/Doctorlist2'); ?>"><i class="fa fa-circle-o"></i>  Doctors</a></li>
-
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');       ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
-                            </ul>
                         </li>
 
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Planning</span> <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-line-chart"></i> <span>Planning</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu treeview" style="display: none;">
                                 <li class=""><a href="<?php echo site_url('User/PlanningMenu'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
@@ -182,7 +175,7 @@
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Reporting</span> <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-file-o"></i> <span>Reporting</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu" style="display: none;">
 
@@ -197,9 +190,9 @@
                             </a>
                             <ul class="treeview-menu" style="display: none;">
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');       ?>"><i class="fa fa-circle-o"></i>  Rx </a></li>
+                                <li class=""><a href="<?php echo site_url('User/monthlyTrend') . '?Zone=' . $this->Zone . '&Division=' . $this->Division . '&Territory=' . $this->Territory; ?>"><i class="fa fa-circle-o"></i>  Rx </a></li>
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');       ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
+                                <li class=""><a href="<?php //echo site_url('User/view_doctor');           ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
                             </ul>
                         </li>
 
@@ -223,7 +216,7 @@
                 ?>
 
                 <!-- Main content -->
-                <section class="content" style="overflow: scroll;">
+                <section class="content">
                     <?php
                     echo $this->session->userdata('message') ? $this->session->userdata('message') : '';
                     $this->session->unset_userdata('message');
@@ -231,6 +224,25 @@
                     <?php $this->load->view($content, $view_data); ?>
                 </section>
             </div><!-- Bootstrap 3.3.2 JS -->
+            <div class="modal fade logout" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg largeModal">
+                    <div class="col-lg-8 col-lg-push-2">
+                        <div class="modal-content logoutModal">
+                            <div class="modal-header huge" ><i class="fa fa-sign-out"></i> Log Out ?</div>
+                            <div class=" modal-body"><p>Are you sure you want to log out?</p>
+                                Press <span class="text-danger">No</span> if you want to continue work. Press <span class="text-success">Yes</span> to logout current user.</div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <a href="<?php echo site_url('User/logout'); ?>" class="btn btn-success">Yes</a>
+                                        <a href="#" class="btn btn-danger" data-dismiss="modal" aria-label="Close">No</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <script src="<?php echo asset_url() ?>dashboard/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
             <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
             <!-- AdminLTE App -->

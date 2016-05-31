@@ -17,10 +17,12 @@ class User_model extends CI_Model {
     }
 
     public function profiling_by_id($Doctor_id, $VEEVA_Employee_ID, $Product_id, $Cycle) {
+        $Cycle = $this->Cycle;
         $this->db->select('*');
         $this->db->from('Profiling');
         $this->db->where(array('Doctor_id' => $Doctor_id, 'VEEVA_Employee_ID' => $VEEVA_Employee_ID, 'Product_id' => $Product_id, 'Cycle' => $Cycle));
         $query = $this->db->get();
+        //echo $this->db->last_query();
         return $query->row_array();
     }
 
@@ -264,7 +266,7 @@ class User_model extends CI_Model {
         $this->db->from('Actual_Doctor_Priority dp');
         $this->db->join('Doctor_Master dm', 'dp.Doctor_Id = dm.Account_ID');
         $this->db->join('Activity_Planning ap', 'ap.Doctor_Id = dm.Account_ID AND ap.month = ' . $this->nextMonth . ' AND ap.Year = "' . $this->nextYear . '"  AND ap.Product_Id = ' . $this->Product_Id, 'left');
-        $this->db->join('Activity_Master am','ap.Activity_Id = am.Activity_id  AND am.Status = 0','left');
+        $this->db->join('Activity_Master am', 'ap.Activity_Id = am.Activity_id  AND am.Status = 0', 'left');
         if ($this->Product_Id == 4 || $this->Product_Id == 6) {
             $where = "dp.VEEVA_Employee_ID ='$this->VEEVA_Employee_ID' AND dp.Product_id='4' AND dp.month = '$this->nextMonth' AND dm.Individual_Type = '$this->Individual_Type'  OR dp.VEEVA_Employee_ID ='$this->VEEVA_Employee_ID' AND dp.Product_id='6' AND dp.month = '$this->nextMonth' AND dm.Individual_Type = '$this->Individual_Type' ";
             $this->db->where($where);
@@ -287,7 +289,7 @@ class User_model extends CI_Model {
         $this->db->select('dm.*,ap.*');
         $this->db->from('Doctor_Master dm');
         $this->db->join('Activity_Planning ap', 'ap.Doctor_Id = dm.Account_ID AND ap.month = ' . $this->nextMonth . ' AND Year = ' . $this->nextYear . ' AND ap.Product_Id = ' . $this->Product_Id, 'left');
-        $this->db->join('Activity_Master am','ap.Activity_Id = am.Activity_id  AND am.Status = 0');
+        $this->db->join('Activity_Master am', 'ap.Activity_Id = am.Activity_id  AND am.Status = 0');
         $where = "ap.VEEVA_Employee_ID ='$id'  AND dm.Individual_Type = '$Individual_Type'  ";
         $this->db->where($where);
         $this->db->group_by('ap.Doctor_Id');
@@ -746,7 +748,7 @@ class User_model extends CI_Model {
     function Planned_Rx_Count() {
         $this->db->select('SUM(`Planned_Rx`) AS Planned_Rx');
         $this->db->from('Rx_Planning');
-        $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_Id' => $this->Product_Id, 'month' => $this->nextMonth, 'Year' => $this->nextYear, 'Planning_Status' => 'Submitted'));
+        $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_Id' => $this->Product_Id, 'month' => $this->nextMonth, 'Year' => $this->nextYear, 'Approve_Status' => 'Approved'));
         $query = $this->db->get();
         return $query->row_array();
     }
@@ -856,7 +858,7 @@ class User_model extends CI_Model {
         $this->db->select('SUM(Actual_Rx) AS Actual_Rx');
         $this->db->from('Rx_Actual rx');
         $this->db->join('Doctor_Master dm', 'rx.Doctor_Id = dm.Account_ID');
-        $this->db->where(array('rx.VEEVA_Employee_ID' => $VEEVA_Employee_ID, 'rx.Product_id' => $Product_id, 'rx.month' => $month, 'Year' => $year, 'rx.Status' => 'Submitted'));
+        $this->db->where(array('rx.VEEVA_Employee_ID' => $VEEVA_Employee_ID, 'rx.Product_id' => $Product_id, 'rx.month' => $month, 'Year' => $year, 'rx.Approve_Status' => 'Approved'));
         $query = $this->db->get();
         return $query->row_array();
     }
@@ -868,7 +870,7 @@ class User_model extends CI_Model {
                 ( SELECT * FROM `Rx_Planning` rp WHERE 
                 `month`='$month'
                 AND `VEEVA_Employee_ID` = '$VEEVA_Employee_ID'
-                AND `Planning_Status` = 'Submitted' 
+                AND `Approve_Status` = 'Approved' 
                 AND `Product_id` = '$Product_id' 
                 AND `Year` = '$year') AS rp
                    INNER JOIN    Employee_Doc ed 
@@ -895,7 +897,7 @@ class User_model extends CI_Model {
            ( SELECT * FROM`Activity_Planning` 
                 WHERE `month` = $this->nextMonth 
                 AND `VEEVA_Employee_ID` = '$VEEVA_Employee_ID' 
-                AND `Status` = 'Submitted'
+                AND `Approve_Status` = 'Approved'
                 AND `Product_id` = '$Product_id'
                 AND `Year` = '$this->nextYear' )AS rp
 
@@ -918,7 +920,7 @@ class User_model extends CI_Model {
           AND `Product_id` = '$Product_id' 
           AND `Year` = '$this->nextYear' 
           AND `month` = '$this->nextMonth' 
-          AND `Status` = 'Submitted' 
+          AND `Approve_Status` = 'Approved' 
           AND `Activity_Done` = 'Yes' ) AS rp
 
           INNER JOIN    Employee_Doc ed 
@@ -1275,11 +1277,11 @@ class User_model extends CI_Model {
                 LEFT JOIN Rx_Target rt
                 ON em.`VEEVA_Employee_ID`=rt.`VEEVA_Employee_ID`AND rt.`Status`='Submitted' AND rt.`Product_Id`=$product AND rt.`Month`=$month AND rt.`Year`=$year
                 LEFT JOIN Rx_Planning rp
-                ON dm.`Account_ID` = rp.`Doctor_Id`AND rp.`Product_Id`=$product AND rp.`Month`=$month AND rp.`Year`=$year AND rp.VEEVA_Employee_ID = em.VEEVA_Employee_ID
+                ON dm.`Account_ID` = rp.`Doctor_Id` AND rp.Approve_Status ='Approved' AND rp.`Product_Id`=$product AND rp.`Month`=$month AND rp.`Year`=$year AND rp.VEEVA_Employee_ID = em.VEEVA_Employee_ID
                 LEFT JOIN Activity_Planning ap
-                ON dm.`Account_ID` = ap.`Doctor_Id` AND ap.`Product_Id`=$product AND ap.`Month`=$month AND ap.`Year`=$year AND em.`VEEVA_Employee_ID` = ap.`VEEVA_Employee_ID` 
+                ON dm.`Account_ID` = ap.`Doctor_Id` AND ap.Approve_Status = 'Approved' AND ap.`Product_Id`=$product AND ap.`Month`=$month AND ap.`Year`=$year AND em.`VEEVA_Employee_ID` = ap.`VEEVA_Employee_ID` 
                 LEFT JOIN Activity_Reporting ar
-                ON dm.`Account_ID` = ar.`Doctor_Id` AND ar.`Product_Id`=$product AND ar.`Month`=$month AND ar.`Year`=$year AND em.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID` 
+                ON dm.`Account_ID` = ar.`Doctor_Id` AND ar.Approve_Status = 'Approved' AND ar.`Product_Id`=$product AND ar.`Month`=$month AND ar.`Year`=$year AND em.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID` 
                 GROUP BY em.`VEEVA_Employee_ID`";
         $query = $this->db->query($sql);
         //echo $sql;
@@ -1471,6 +1473,7 @@ class User_model extends CI_Model {
                         FROM
                           `Rx_Planning` 
                         WHERE `Product_Id` = $product 
+                          AND Approve_Status = 'Approved'
                           AND `Month` = $month 
                           AND `Year` = '$year' AND Planned_Rx > 0 ) AS rp 
                         ON dm.`Account_ID` = rp.`Doctor_Id` 
@@ -1481,6 +1484,7 @@ class User_model extends CI_Model {
                           FROM
                             `Activity_Planning` 
                           WHERE `Product_Id` = $product 
+                            AND Approve_Status = 'Approved'
                             AND `Month` = $month 
                             AND `Year` = '$year') AS ap 
                           ON dm.`Account_ID` = ap.`Doctor_Id` 
@@ -1491,6 +1495,7 @@ class User_model extends CI_Model {
                           FROM
                             `Activity_Reporting` 
                           WHERE `Product_Id` = $product 
+                            AND Approve_Status = 'Approved'
                             AND `Month` = $month 
                             AND `Year` = '$year') AS ar 
                           ON dm.`Account_ID` = ar.`Doctor_Id` 
@@ -1514,7 +1519,7 @@ class User_model extends CI_Model {
                           Doctor_Id,VEEVA_Employee_ID
                         FROM
                           Rx_Actual 
-                        WHERE YEAR = '$year' AND month IN($month1,$month2) AND Actual_Rx > 0
+                        WHERE YEAR = '$year' AND Approve_Status = 'Approved' AND month IN($month1,$month2) AND Actual_Rx > 0
                           AND Product_id = $product 
                         GROUP BY `Doctor_Id`,
                           `VEEVA_Employee_ID`) AS rxa 
@@ -2124,7 +2129,7 @@ class User_model extends CI_Model {
                       (SELECT 
                         * 
                       FROM
-                        Activity_Planning WHERE STATUS = 'Submitted'
+                        Activity_Planning WHERE Approve_Status = 'Approved'
                       GROUP BY Doctor_id,`VEEVA_Employee_ID`) AS tr 
                       ON em.`VEEVA_Employee_ID` = tr.VEEVA_Employee_ID AND dm.Account_Id = tr.Doctor_Id
                     LEFT JOIN Territory_master t 
@@ -2133,7 +2138,7 @@ class User_model extends CI_Model {
                       (SELECT 
                         * 
                       FROM
-                        Activity_Reporting WHERE STATUS = 'Submitted'
+                        Activity_Reporting WHERE Approve_Status = 'Approved'
                       GROUP BY Doctor_id,`VEEVA_Employee_ID`) AS rx 
                       ON rx.Doctor_Id = dm.`Account_ID` 
                       AND rx.VEEVA_Employee_ID = ed.`VEEVA_Employee_ID`";
@@ -2242,7 +2247,7 @@ class User_model extends CI_Model {
               AND `Product_id` = '$Product_id' 
               AND `Year` = '$year' 
               AND `month` IN($month1,$month2,$moth3) 
-              AND `Status` = 'Submitted' 
+              AND `Approve_Status` = 'Approved' 
               AND `Activity_Done` = 'Yes' ) AS rp
             INNER JOIN    Employee_Doc ed 
               ON ed.`VEEVA_Employee_ID` = rp.`VEEVA_Employee_ID` AND ed.Status = '1'  AND ed.VEEVA_Account_ID = rp.Doctor_id
@@ -2317,7 +2322,7 @@ class User_model extends CI_Model {
                     FROM
                    ( SELECT * FROM `Rx_Planning` rp WHERE 
                    `VEEVA_Employee_ID` = '$VEEVA_Employee_ID'
-                    AND `Planning_Status` = 'Submitted' 
+                    AND `Approve_Status` = 'Approved' 
                     AND `Product_id` = '$Product_id' 
                     AND `Year` = '2016'
                     AND  `month` IN ( $month1, $month2, $month3) 
@@ -2465,7 +2470,7 @@ class User_model extends CI_Model {
 
     function CutOfDate() {
         $current_day = date('d');
-        if ($current_day <= 3 ) {
+        if ($current_day <= 3) {
             $current_month = date('n', strtotime('-1 month'));
             $created_at = date("Y-m-d", mktime(0, 0, 0, date("m"), 0, date("Y")));
         } else {

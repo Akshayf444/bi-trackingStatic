@@ -18,7 +18,7 @@ class Doctor_Model extends MY_model {
 
     public function getProfiledDoctor($VEEVA_Employee_ID = 0, $Product_Id, $Individual_Type, $Cycle) {
         $sql = "SELECT 
-                    dm.*,
+                    dm.*,pf.Profile_id,
                     (
                       CASE
                         WHEN pf.Status = 'Submitted' 

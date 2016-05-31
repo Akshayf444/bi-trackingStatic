@@ -1,17 +1,20 @@
 <script src="<?php echo asset_url(); ?>js/formValidation.min.js" type="text/javascript"></script>
 <script src="<?php echo asset_url(); ?>js/bootstrap.min.js" type="text/javascript"></script>
+<?php $this->load->view('User/ProductList', array('site_url' => 'User/ActivityPlanning')); ?>
 <?php
 $attributes = array('id' => 'form1');
 echo form_open('User/ActivityPlanning', $attributes);
 ?>
-<div class="col-lg-12 col-md-12 ">
-    <div class="panel panel-default">
-        <div class="panel-heading">Activity Planning</div>
-        <div class="panel-body">   
-            <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
-            <input type="hidden" id="Status" name="Status" value="Draft">
-            <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
-            <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
+<div class="row">
+    <div class="col-lg-12 col-md-12 ">
+        <div class="panel panel-default">
+            <div class="panel-heading">Activity Planning</div>
+            <div class="panel-body">   
+                <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
+                <input type="hidden" id="Status" name="Status" value="Draft">
+                <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
+                <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
+            </div>
         </div>
     </div>
 </div>

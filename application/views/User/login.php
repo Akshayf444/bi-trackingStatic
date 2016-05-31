@@ -1,16 +1,31 @@
-<div class="container" style="margin-top: 2em;">
+<div class="container" >
     <?php
     if (isset($message)) {
         echo '<div class="alert alert-danger" style="text-align:center">' . $message . '</div>';
     }
     ?>
     <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-8 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
+        <div class="col-lg-3 col-lg-offset-7 col-md-12 col-xs-12" id="mini-notification" align="right">
+            Helpline No : <span class="helpline" style = 'color:red;font-weight:bold'>022-65657701</span><br>From 10 am - 6 pm
+            <p>Mail Us: <a href="mailto:bisupport@instacom.in">bisupport@instacom.in</p></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12" align="center">
+            <h3>Welcome To BI Tracker</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-sm-offset-2 col-xs-6 col-xs-offset-3 col-md-offset-1 col-lg-offset-1" style="padding: 15px">            
+            <img  src="<?php echo asset_url() ?>images/travels.png" width="100%"  >
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 col-lg-offset-1 col-md-offset-1   ">
             <div class="panel panel-default">
-                <div class="panel-heading" style="text-align: center">
-                    <img  src="<?php echo asset_url() ?>images/travels.png" width="45%" >
+                <div class="panel-heading" style="text-align: center;border-bottom: dashed 2px #118E11">
+                    <h3>Sign In</h3>
+                    Login To Access Your Account
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" style="padding: 30px">
                     <?php echo form_open('User/index') ?>
 
                     <div class="form-group">
@@ -25,23 +40,17 @@
                     <!--                        <div class="col-lg-8">
                                                 <input type="password" id="pwd" class="form-control pword" placeholder="Password" name="password" /></div><div class="col-lg-4">  <button type="button" id="eye">Show</button></div>
                                         </div>-->
-                    <input class="btn btn-success btn-block" type="submit" value="Sign In" >
-
+                    <input class="btn btn-success btn-block" style="background: #2A5567" type="submit" value="Sign In" >
+                    <br/>
+                    <div onclick="window.location = '<?php echo site_url('User/forget_pass') ?>';" >
+                        <a>Forget Password</a>
+                    </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div onclick="window.location = '<?php echo site_url('User/forget_pass') ?>';" class="col-lg-3 col-md-3 col-lg-offset-3 col-md-offset-3">
-            <a>Forget Password</a>
-        </div>
 
-        <div class="col-lg-3 col-md-3" id="mini-notification" align="right">
-            Helpline No : <span class="helpline" style = 'color:red;font-weight:bold'>022-65657701</span><br>From 10 am - 6 pm
-            <p>Mail Us: <a href="mailto:bisupport@instacom.in">bisupport@instacom.in</p></a>
-        </div>
-    </div>
 </div>
 
 <script>

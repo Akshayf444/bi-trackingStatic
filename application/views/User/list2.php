@@ -1,20 +1,21 @@
+<?php $this->load->view('User/ProductList', array('site_url' => $site_url)); ?>
 <div class="row">
     <div class="col-lg-12">
         <table class="table table-bordered panel">
             <tr>
-                <td>VEEVA ID</td>
-                <td>Doctor Name</td>
-                <td>Specialty</td>
-                <td>Action</td>
+                <th>VEEVA ID</th>
+                <th>Doctor Name</th>
+                <th>Specialty</th>
+                <th>Action</th>
             </tr>
-            <?php for ($index = 0; $index < 2; $index++) {
-                echo '<tr><td>0019000001N8CkQAAV</td><td>ABCD</td><td>ABCD</td>
-                <td><input type="button" class="btn btn-success btn-xs" value="View Detail" ></td></tr>';
-            }?>
-            <?php for ($index = 0; $index < 2; $index++) {
-                echo '<tr><td>0019000001N8CkQAAV</td><td>ABCD</td><td>ABCD</td>
-                <td><input type="button" class="btn btn-danger btn-xs" value="Add Detail" ></td></tr>';
-            }?>
+            <?php
+            foreach ($doctorlist as $value) {
+                echo '<tr><td>' . $value->Account_ID . '</td><td>' . $value->Account_Name . '</td><td>' . $value->Specialty . '</td>';
+                echo '<td>';
+                echo is_null($value->Profile_id) ? '<a href="' . site_url('User/Profiling?Product_Id=' . $this->Product_Id . '&Doctor_Id=' . $value->Account_ID) . '" class="btn btn-danger btn-xs">Add Detail</a>' : '<a href="' . site_url('User/Profiling?Product_Id=' . $this->Product_Id . '&Doctor_Id=' . $value->Account_ID) . '" class="btn btn-success btn-xs">View Detail</a>';
+                echo '</td></tr>';
+            }
+            ?>
         </table>
     </div>
 </div>

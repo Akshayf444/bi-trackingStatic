@@ -14,7 +14,7 @@
         padding: 2px 4px;
     }
 </style>
-
+<?php $this->load->view('User/ProductList', array('site_url' => 'User/Planning')); ?>
 <div class="row">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
         <p>No Of New <?php
@@ -226,7 +226,7 @@ echo form_open('User/Planning', $attributes);
         <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
         <!--        </div>-->
         <?php if (isset($result) && !empty($result)) { ?>
-            <div class="panel-footer">                
+            <div class="">                
                 <?php if ($allApproved == TRUE) { ?>
                     <button type="button" id="Priority" class="btn btn-danger">Prioritize for activities</button>  
                     <button type="submit" id="Submit" class="btn btn-success">Submit</button>

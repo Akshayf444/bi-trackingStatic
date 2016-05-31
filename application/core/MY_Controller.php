@@ -19,6 +19,8 @@ class MY_Controller extends CI_Controller {
     public $password_status;
     public $Zone;
     public $Cycle;
+    public $Product_List;
+    public $Territory;
 
     function __construct() {
         parent::__construct();
@@ -30,12 +32,11 @@ class MY_Controller extends CI_Controller {
         $this->Designation = $this->session->userdata('Designation');
         $this->Division = $this->session->userdata('Division');
         $this->Full_Name = $this->session->userdata('Full_Name');
-        $this->Product_Id = 2;
         $this->password_status = $this->session->userdata('password_status');
         $this->Zone = $this->session->userdata('Zone');
         $this->nextMonth = date('n');
         $this->nextYear = date('Y');
-
+        $this->Territory = $this->session->userdata('Territory');
         if (date('n') == 1 || date('n') == 2 || date('n') == 3 || date('n') == 4) {
             $this->Cycle = 1;
         } elseif (date('n') == 5 || date('n') == 6 || date('n') == 7 || date('n') == 8) {
@@ -44,11 +45,12 @@ class MY_Controller extends CI_Controller {
             $this->Cycle = 3;
         }
 
-        if ($this->Product_Id == 1) {
+        if ($this->Product_Id == 1 || $this->input->get('Product_Id') == 1) {
             $this->Individual_Type = 'Hospital';
         } else {
             $this->Individual_Type = 'Doctor';
         }
+        $this->Cycle = 2;
     }
 
     function is_logged_in($Profile = "") {

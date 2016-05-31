@@ -3,7 +3,7 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <ul align="center" class="nav nav-tabs ">
+        <ul align="center" class="nav nav-tabs " style="border-bottom: 0;padding-bottom: 10px;">
             <?php
             if (!empty($productlist)) {
                 $count = 1;
@@ -48,7 +48,10 @@ if (isset($_GET['Product_Id'])) {
             $Activity_report = 0;
             $condition = array();
             // $condition[0] = "rp.Product_id = " . $Product_id;
-
+            if ($Product_id == 1){
+                $this->Individual_Type = 'Hospital';
+            }
+            
             if (isset($this->Zone) && $this->Zone != '' && $this->Zone != '-1') {
                 $condition[1] = "em.Zone = '" . $this->Zone . "'";
             }
@@ -173,7 +176,7 @@ if (isset($_GET['Product_Id'])) {
             <div id="<?php echo $Product_id ?>" class="row">
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="info-box bg-green">
-                        <span class="info-box-icon"><i class="fa fa-medkit"></i></span>
+                        <span class="info-box-icon"><i class="fa fa-bullseye"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Target Assigned</span>
                             <span class="info-box-number"><?php
@@ -185,7 +188,7 @@ if (isset($_GET['Product_Id'])) {
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="info-box bg-red">
-                        <span class="info-box-icon"><i class="ion ion-ios-cart-outline"></i></span>
+                        <span class="info-box-icon"><i class="fa fa-file-text-o"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Reported Rx</span>
                             <span class="info-box-number"><?php
@@ -197,7 +200,7 @@ if (isset($_GET['Product_Id'])) {
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="info-box bg-red">
-                        <span class="info-box-icon"><i class="ion ion-ios-cart-outline"></i></span>
+                        <span class="info-box-icon"><i class="fa fa-users"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Activities Planned</span>
                             <span class="info-box-number"><?php
@@ -209,7 +212,7 @@ if (isset($_GET['Product_Id'])) {
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="info-box bg-red">
-                        <span class="info-box-icon"><i class="ion ion-ios-cart-outline"></i></span>
+                        <span class="info-box-icon"><i class="fa fa-files-o"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Activities Reported</span>
                             <span class="info-box-number"><?php
@@ -224,7 +227,7 @@ if (isset($_GET['Product_Id'])) {
                 <div class="col-lg-6 col-xs-12 col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-body ">
-                            <div id="container1" >
+                            <div id="container1" class="col-xs-11"  >
                             </div>
                         </div>
                     </div>
@@ -232,7 +235,7 @@ if (isset($_GET['Product_Id'])) {
                 <div class="col-lg-6 col-xs-12 col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-body ">
-                            <div id="container2" >
+                            <div id="container2" class="col-xs-11"    >
                             </div>
                         </div>
                     </div>
@@ -246,7 +249,7 @@ if (isset($_GET['Product_Id'])) {
                     <div class="panel panel-default">
                         <div class="panel-body ">
                             <div class="col-xs-8">
-                                <h4>Profiling </h4><p>(Profiled / Total <?php echo $hospital;?>) </p><label class="badge badge-success"><?php echo $profileCount["profile_count"] ?> / <?php echo $doctorCount["DoctorCount"] ?></label>
+                                <h4>Profiling </h4><p>(Profiled / Total <?php echo $hospital; ?>) </p><label class="badge badge-success"><?php echo $profileCount["profile_count"] ?> / <?php echo $doctorCount["DoctorCount"] ?></label>
                             </div>
                             <div class="col-xs-4">
                                 <input type="text" readonly="readonly" style="display: none" data-angleOffset=-125 data-angleArc=250 value="<?php echo $PROFILE; ?>" id="dial3">
@@ -258,7 +261,7 @@ if (isset($_GET['Product_Id'])) {
                                     });
                                 </script>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -278,7 +281,7 @@ if (isset($_GET['Product_Id'])) {
                                     });
                                 </script>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -298,7 +301,7 @@ if (isset($_GET['Product_Id'])) {
                                     });
                                 </script>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

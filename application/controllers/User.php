@@ -7,6 +7,7 @@ class User extends MY_Controller {
 
     public $alertLabel = 'Doctor';
     public $doctorIds = array();
+    public $Errors = array();
 
     public function __construct() {
         parent::__construct();
@@ -14,8 +15,10 @@ class User extends MY_Controller {
         $this->load->model('User_model');
         $this->load->model('Master_Model');
         $this->load->model('Doctor_Model');
+        $this->load->model('admin_model');
         $this->load->model('Encryption');
         $this->load->library('form_validation');
+        $this->Product_List = $this->Master_Model->BrandList($this->session->userdata('Division'));
         $this->calcPlanning();
     }
 
@@ -142,6 +145,7 @@ class User extends MY_Controller {
                 $this->session->set_userdata('Reporting_To', $check['Reporting_To']);
                 $this->session->set_userdata('password_status', $check['password_status']);
                 $this->session->set_userdata('Zone', $check['Zone']);
+                $this->session->set_userdata('Territory', $check['Territory']);
 
                 $check_password = $this->User_model->password_status($this->session->userdata('VEEVA_Employee_ID'));
                 $add = array(
@@ -244,9 +248,16 @@ class User extends MY_Controller {
     }
 
     public function Profiling() {
+        $Doctor_Id = '0';
+
+        if ($this->input->get('Product_Id') && $this->input->get('Doctor_Id')) {
+            $Doctor_Id = $this->input->get('Doctor_Id');
+            $this->Product_Id = $this->input->get('Product_Id');
+        }
 
         if ($this->Product_Id == 1) {
             $this->alertLabel = "Hospital";
+            $this->Individual_Type = 'Hospital';
         }
 
         $messages = array();
@@ -399,11 +410,11 @@ class User extends MY_Controller {
                                 'Profile' => 'BDM',
                             );
 //$this->User_model->insertLog($logdata);
-                            redirect('User/Profiling', 'refresh');
+                            redirect('User/Doctorlist2', 'refresh');
                         }
                     } elseif ($check['Status'] == 'Submitted') {
                         $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Already Submitted .', 'danger'));
-                        redirect('User/Profiling', 'refresh');
+                        redirect('User/Doctorlist2', 'refresh');
                     }
                 } else {
                     $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Please Answer Winability Questions .', 'danger'));
@@ -411,10 +422,10 @@ class User extends MY_Controller {
             }
 
             $data['Product_Id'] = $this->Product_Id;
-            $data['doctorList'] = $this->Master_Model->generateProfileDropdown($result);
+            $data['doctorList'] = $this->Master_Model->generateProfileDropdown($result, $Doctor_Id);
             $data['questionList'] = $this->Master_Model->getQuestions($this->Product_Id);
-            $data = array('title' => 'Question', 'content' => 'User/Question', 'backUrl' => 'User/dashboard', 'view_data' => $data);
-            $this->load->view('template2', $data);
+            $data = array('title' => 'Question', 'content' => 'User/Question', 'backUrl' => 'User/dashboard', 'page_title' => 'Profiling', 'view_data' => $data);
+            $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
         }
@@ -428,12 +439,8 @@ class User extends MY_Controller {
     }
 
     public function Planning() {
-        if ($this->input->get('Product_Id') > 0) {
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
-        if ($this->Product_Id == 1) {
-            $this->alertLabel = "Hospital";
-        }
+        $this->setProductId();
+
         $messages = array();
         $logmessage = array();
         if ($this->is_logged_in('BDM')) {
@@ -547,12 +554,8 @@ class User extends MY_Controller {
     }
 
     public function ActivityPlanning() {
-        if ($this->input->get('Product_Id') > 0) {
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
-        if ($this->Product_Id == 1) {
-            $this->alertLabel = "Hospital";
-        }
+        $this->setProductId();
+
         $check_planning = $this->User_model->priority_check($this->VEEVA_Employee_ID, $this->Product_Id, $this->nextMonth);
         if (!empty($check_planning)) {
             if ($this->Product_Id == 1) {
@@ -720,13 +723,7 @@ class User extends MY_Controller {
     }
 
     public function Reporting() {
-        if ($this->input->get('Product_Id') > 0) {
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
-
-        if ($this->Product_Id == 1) {
-            $this->alertLabel = "Hospital";
-        }
+        $this->setProductId();
         $messages = array();
         $logmessage = array();
 
@@ -743,7 +740,7 @@ class User extends MY_Controller {
                 $message = $this->Master_Model->DisplayAlert('Rx / Vials Reporting For ' . date('M', strtotime($created_at)), 'danger');
                 $this->session->set_userdata('message', $message);
                 $data['result'] = $this->User_model->getReporting($this->VEEVA_Employee_ID, $this->Product_Id, $current_month, $this->nextYear, $created_at);
-                // var_dump($data['result']);
+
                 if ($this->input->post()) {
                     for ($i = 0; $i < count($this->input->post('doc_id')); $i++) {
                         $value = $this->input->post('value');
@@ -816,7 +813,7 @@ class User extends MY_Controller {
             } else {
                 $data['doctorList'] = "<h1>Please Save Planning First</h1>";
             }
-            $data = array('title' => 'Reporting Doctor', 'content' => 'User/Prescription_Doctor_List', 'backUrl' => 'User/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Reporting Doctor', 'content' => 'User/Prescription_Doctor_List', 'page_title' => 'Reporting', 'backUrl' => 'User/dashboard', 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
@@ -838,6 +835,7 @@ class User extends MY_Controller {
 
         if ($this->Product_Id == 1) {
             $this->alertLabel = "Hospital";
+            $this->Individual_Type = "Hospital";
         }
         $messages = array();
         $logmessage = array();
@@ -894,9 +892,7 @@ class User extends MY_Controller {
     }
 
     public function ActivityReporting() {
-        if ($this->input->get('Product_Id') > 0) {
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
+        $this->setProductId();
 
         if ($this->is_logged_in('BDM')) {
             $cutoffdates = $this->User_model->CutOfDate();
@@ -1041,7 +1037,8 @@ class User extends MY_Controller {
 
     public function getProfilingData() {
         $Doctor_Id = $this->input->post('Doctor_Id');
-        $ProfilingDetails = $this->User_model->profiling_by_id($Doctor_Id, $this->VEEVA_Employee_ID, $this->Product_Id, $this->Cycle);
+        $Product_Id = $this->input->post('Product_Id');
+        $ProfilingDetails = $this->User_model->profiling_by_id($Doctor_Id, $this->VEEVA_Employee_ID, $Product_Id, $this->Cycle);
 
         if (!empty($ProfilingDetails)) {
             echo json_encode($ProfilingDetails);
@@ -1398,8 +1395,113 @@ EMAILBODY;
     }
 
     public function Doctorlist2() {
-        $data = array('title' => 'Reset_Password', 'content' => 'User/list2', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
+        if ($this->is_logged_in('BDM')) {
+            $this->setProductId();
+            $data['site_url'] = 'User/DoctorList2';
+            $data['doctorlist'] = $this->Doctor_Model->getProfiledDoctor($this->VEEVA_Employee_ID, $this->Product_Id, $this->Individual_Type, $this->Cycle);
+            $data = array('title' => 'Profiling', 'content' => 'User/list2', 'page_title' => 'Doctor List', 'view_data' => $data);
+            $this->load->view('bdmfront', $data);
+        } else {
+            $this->logout();
+        }
+    }
+
+    function monthlyTrend() {
+        $offset = 0;
+        $perpage = 5000;
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+        $result = $this->admin_model->find_zone();
+        $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone');
+        $TerritoryConditions = array();
+        $product = 0;
+        $data['Territory'] = '';
+        $data['result'] = NULL;
+
+        ///Initial Product Dropdown
+        $productlist = $this->admin_model->show_pro_list();
+        $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
+
+
+        array_push($TerritoryConditions, "em.Profile = 'BDM' ");
+
+        $condition = array();
+        if ($this->input->get('Zone') != '') {
+            $Zone = $this->Designation == 'ZSM' ? $this->Zone : $this->input->get('Zone');
+            $condition[0] = "em.Zone = '" . $Zone . "'";
+            $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
+            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
+        }
+
+        if ($this->input->get('Division') != '') {
+            $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
+            $Division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
+            $condition[1] = "em.Division = '" . $Division . "'";
+            array_push($TerritoryConditions, "em.Division = '" . $Division . "'");
+            $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
+        }
+
+        if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
+            $condition[3] = "em.Territory = '" . $this->input->get('Territory') . "'";
+        }
+
+        if ($this->input->get('VEEVA_Employee_ID') && $this->input->get('VEEVA_Employee_ID') != '') {
+            $condition[5] = "em.VEEVA_Employee_ID = '" . $this->input->get('VEEVA_Employee_ID') . "'";
+        }
+        ///Fetch Monthly Trend Data
+        if ($this->input->get('Product') != '' && $this->input->get('Product') != 'All') {
+            $product = $this->input->get('Product');
+            $ProfileCount = $this->User_model->countMonthlyTrend($product, $this->nextYear, $condition);
+            //var_dump($ProfileCount);
+            if (isset($ProfileCount->PlanningCount)) {
+                $data['total_pages'] = ceil($ProfileCount->PlanningCount / $perpage);
+                $offset = ($page - 1) * $perpage;
+            }
+            $data['result'] = $this->User_model->monthlyTrend2(1, $this->nextYear, $this->input->get('Product'), $condition, $perpage, $offset);
+            $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
+        } elseif ($this->input->get('Product') == 'All') {
+            array_push($this->Errors, 'Please Select Product');
+            //$data['result'] = $this->User_model->monthlyTrend2(1, $this->nextYear, $this->input->get('Product'), $condition);
+        } else {
+            array_push($this->Errors, 'Please Select Product');
+        }
+
+        ///Generate Territory Dropdown
+        $Territory = $this->User_model->getTerritory1($TerritoryConditions);
+        $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
+
+        ///Display Errors
+        if (!empty($this->Errors)) {
+            $this->session->set_userdata('message', $this->Master_Model->DisplayAlert(join(".<br/>", array_unique($this->Errors))), 'danger');
+        }
+
+        ///EXPORT TO EXCEL ARRAY(Converting From Array To Object)
+        $array = json_decode(json_encode($data['result']), true, JSON_NUMERIC_CHECK);
+        $fields = array('Zone', 'Territory', 'BDM Name', 'BDM Code', 'Doctor Code', 'Doctor Name', 'Product Name', 'Activity Planned', 'Activity Completed', 'Rx Planned');
+        for ($m = 1; $m <= 12; $m++) {
+            $month = date('M', mktime(0, 0, 0, $m, 1, date('Y')));
+            array_push($fields, $month);
+        }
+        if ($this->input->get('Export') == 'Export') {
+            ExportToExcel($array, 'MonthlyTrend', $fields);
+        }
+        $data = array('title' => 'Monthly Trend', 'content' => 'User/monthlyTrend', 'page_title' => 'Monthly Rx Trend', 'view_data' => $data);
         $this->load->view('bdmfront', $data);
+    }
+
+    function setProductId() {
+        if ($this->input->get('Product_Id') > 0) {
+            $this->Product_Id = $this->input->get('Product_Id');
+        } else {
+            $Productlist = $this->Product_List;
+            $firstProduct = array_shift($Productlist);
+            $this->Product_Id = $firstProduct->id;
+        }
+
+        if ($this->Product_Id == 1) {
+            $this->Individual_Type = 'Hospital';
+            $this->alertLabel = 'Hospital';
+        }
     }
 
 }

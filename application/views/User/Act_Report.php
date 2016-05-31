@@ -43,16 +43,19 @@
     }
 </style>
 <script src="<?php echo asset_url(); ?>js/bootstrap.min_1.js" type="text/javascript"></script>
+<?php $this->load->view('User/ProductList', array('site_url' => 'User/ActivityReporting')); ?>
 <?php echo form_open('User/ActivityReporting'); ?>
-<div class="col-lg-12 col-md-12 ">
-    <div class="panel panel-default">
-        <div class="panel-heading">Activity Reporting For <?php echo $this->User_model->getMonthName($current_month);?></div>
-        <div class="panel-body">   
-            <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
+<div class="row">
+    <div class="col-lg-12 col-md-12 ">
+        <div class="panel panel-default">
+            <div class="panel-heading">Activity Reporting For <?php echo $this->User_model->getMonthName($current_month); ?></div>
+            <div class="panel-body">   
+                <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
 
-            <input type="hidden" id="Status" name="Status" value="Draft">
-            <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
-            <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
+                <input type="hidden" id="Status" name="Status" value="Draft">
+                <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
+                <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
+            </div>
         </div>
     </div>
 </div>
@@ -89,35 +92,37 @@
     });
 
 </script>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <div class="panel panel-default">
-        <div class="panel-heading">Asm Comment</div>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="datatable">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th> ASM Comment</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (!empty($asm_comment)) {
-                            foreach ($asm_comment as $row) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $row->created_at ?> </td>
-                                    <td><?php echo $row->Comment ?> </td>
-                                    <td><?php echo $row->Comment_type ?> </td>
-                                </tr>
-                                <?php
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Asm Comment</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th> ASM Comment</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (!empty($asm_comment)) {
+                                foreach ($asm_comment as $row) {
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $row->created_at ?> </td>
+                                        <td><?php echo $row->Comment ?> </td>
+                                        <td><?php echo $row->Comment_type ?> </td>
+                                    </tr>
+                                    <?php
+                                }
                             }
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -725,6 +725,7 @@ class admin_model extends CI_Model {
                       AND ap.`Product_Id` = {$Product_Id}   
                       AND ap.`Month` = {$month} 
                       AND ap.`Year` = '$Year' 
+                      AND ap.Approve_Status = 'Approved'
                       AND em.`VEEVA_Employee_ID` = ap.`VEEVA_Employee_ID` 
                     LEFT JOIN Activity_Reporting ar 
                       ON ed.`VEEVA_Account_ID` = ar.`Doctor_Id` 
@@ -790,8 +791,7 @@ class admin_model extends CI_Model {
         $sql = "SELECT SUM(Planned_Rx)AS planned FROM Rx_Planning rp WHERE rp.`month`='2' AND Product_Id='4'  
             UNION ALL
             SELECT SUM(Actual_Rx) AS actual FROM Rx_Actual ar
-            WHERE ar.`month`='2'   AND Product_Id='4' 
-            ";
+            WHERE ar.`month`='2'   AND Product_Id='4' ";
         $query = $this->db->query($sql);
         return $query->result();
     }
@@ -1204,7 +1204,7 @@ EMAILBODY;
                     ) AS m12,Doctor_Id,VEEVA_Employee_ID
                     FROM
                       `Rx_Planning` 
-                    WHERE Product_id = {$product} AND Year = '$year'
+                    WHERE Product_id = {$product} AND Year = '$year' AND Approve_Status = 'Approved'
                     GROUP BY `Doctor_Id`,
                       `VEEVA_Employee_ID`) rp 
                     INNER JOIN `Employee_Doc` ed 
@@ -1313,7 +1313,7 @@ EMAILBODY;
                     ) AS Ac12 ,`VEEVA_Employee_ID`,Doctor_Id,MONTH,YEAR
                       FROM
                         `Rx_Actual` 
-                      WHERE YEAR = '$year' AND Actual_Rx > 0 
+                      WHERE YEAR = '$year' AND Actual_Rx > 0 AND Approve_Status = 'Approve'
                         AND Product_id = {$product} GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
                       ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` 
                       AND rp.`Doctor_Id` = rx.`Doctor_Id` ";
@@ -1549,7 +1549,7 @@ EMAILBODY;
                     ) AS m12
                     FROM
                       `Activity_Planning` 
-                    WHERE Product_id = {$product} AND Year = '$year' GROUP BY Doctor_Id,VEEVA_Employee_ID
+                    WHERE Product_id = {$product} AND Year = '$year' AND Approve_Status = 'Approved' GROUP BY Doctor_Id,VEEVA_Employee_ID
                     ) AS rp 
                     INNER JOIN `Employee_Doc` ed 
                       ON rp.`Doctor_Id` = ed.`VEEVA_Account_ID` AND ed.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND ed.Status = 1              
@@ -1564,7 +1564,7 @@ EMAILBODY;
                       FROM
                         `Activity_Reporting` 
                       WHERE YEAR = '$year' 
-                        AND Product_id = {$product} GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
+                        AND Product_id = {$product} AND Approve_Status = 'Approved' GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
                       ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` 
                       AND rp.`Doctor_Id` = rx.`Doctor_Id` ";
         if (!empty($conditions)) {

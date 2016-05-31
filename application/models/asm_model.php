@@ -25,7 +25,7 @@ class asm_model extends CI_Model {
                 LEFT JOIN  Rx_Planning ON Doctor_Master.Account_ID= Rx_Planning.Doctor_Id
                  WHERE Rx_Planning.Product_Id='$product'
                   AND Rx_Planning.VEEVA_Employee_ID='$id' 
-                  AND Rx_Planning.Planning_Status='submitted'
+                  AND Rx_Planning.Approve_Status='Approved'
                   ";
         $query = $this->db->query($sql);
         return $query->result();
@@ -64,7 +64,7 @@ class asm_model extends CI_Model {
             INNER JOIN Doctor_Master dm ON ed.VEEVA_Account_ID = dm.Account_ID
             LEFT JOIN `Activity_Reporting` ar ON `dm`.`Account_ID` = `ar`.`Doctor_Id` 
             WHERE `ar`.`Product_Id` = '$product_id' AND `ed`.`Status`='1'
-            AND `ar`.`VEEVA_Employee_ID` = '$id' AND `ar`.`month` = '$this->nextMonth' AND `ar`.`Status` = 'Submitted' AND `ar`.`Year` = '$this->nextYear'";
+            AND `ar`.`VEEVA_Employee_ID` = '$id' AND `ar`.`month` = '$this->nextMonth' AND `ar`.`Approve_Status` = 'Approved' AND `ar`.`Year` = '$this->nextYear'";
 
         $query = $this->db->query($sql);
         return $query->result();
@@ -151,28 +151,32 @@ class asm_model extends CI_Model {
         $sql = "SELECT 
                 em.`Full_Name`,
                 em.`VEEVA_Employee_ID`,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Planning_Status` = 'Submitted' 
-                    THEN 1 
+                    THEN rp.Planned_Rx 
+                    ELSE 0
                   END
                 ) AS SubmitCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Approved' 
-                    THEN 1 
+                    THEN rp.Planned_Rx 
+                    ELSE 0
                   END
                 ) AS ApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Un-Approved' 
-                    THEN 1 
+                    THEN rp.Planned_Rx 
+                    ELSE 0
                   END
                 ) AS UnApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'SFA' 
-                    THEN 1 
+                    THEN rp.Planned_Rx 
+                    ELSE 0
                   END
                 ) AS SFACount 
                 FROM (
@@ -193,7 +197,7 @@ class asm_model extends CI_Model {
                           Employee_Master 
                       WHERE Reporting_VEEVA_ID = '$this->VEEVA_Employee_ID') AND d.Individual_Type = '$Individual_Type' ) AS dm 
                 ON em.VEEVA_Employee_ID = dm.VEEVA_Employee_ID 
-                LEFT JOIN (SELECT * FROM  `Rx_Planning` WHERE month = {$this->nextMonth} AND Product_Id = {$Product_Id} AND Year = '$this->nextYear' GROUP BY VEEVA_Employee_ID,Doctor_Id ) rp 
+                LEFT JOIN (SELECT SUM(Planned_Rx) AS Planned_Rx,Doctor_Id,VEEVA_Employee_ID,Planning_Status,Approve_Status FROM  `Rx_Planning` WHERE month = {$this->nextMonth} AND Product_Id = {$Product_Id} AND Year = '$this->nextYear' GROUP BY VEEVA_Employee_ID,Doctor_Id ) rp 
                   ON rp.`Doctor_Id` = dm.`Account_ID` 
                   AND em.`VEEVA_Employee_ID` = rp.`VEEVA_Employee_ID`    
               GROUP BY em.`VEEVA_Employee_ID` ";
@@ -324,28 +328,32 @@ class asm_model extends CI_Model {
 
     function RxReportingStatus($Product_Id, $VEEVA_Employee_Id,$month="") {
         $sql = "SELECT 
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Status` = 'Submitted' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0
                   END
                 ) AS SubmitCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Approved' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0 
                   END
                 ) AS ApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Un-Approved' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0
                   END
                 ) AS UnApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'SFA' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0 
                   END
                 ) AS SFACount 
               FROM
@@ -545,28 +553,32 @@ class asm_model extends CI_Model {
                 em.`Full_Name`,
                 em.`VEEVA_Employee_ID`,
                 
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Planning_Status` = 'Submitted' 
-                    THEN 1 
+                    THEN rp.Planned_Rx
+                    ELSE 0
                   END
                 ) AS SubmitCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Approved' 
-                    THEN 1 
+                    THEN rp.Planned_Rx
+                    ELSE 0
                   END
                 ) AS ApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Un-Approved' 
-                    THEN 1 
+                    THEN rp.Planned_Rx
+                    ELSE 0 
                   END
                 ) AS UnApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'SFA' 
-                    THEN 1 
+                    THEN rp.Planned_Rx
+                    ELSE 0 
                   END
                 ) AS SFACount 
                 FROM (
@@ -698,28 +710,32 @@ class asm_model extends CI_Model {
                 tm.Territory,
                 em.`Full_Name`,
                 em.`VEEVA_Employee_ID`,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Status` = 'Submitted' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0
                   END
                 ) AS SubmitCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Approved' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0 
                   END
                 ) AS ApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'Un-Approved' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0 
                   END
                 ) AS UnApproveCount,
-                COUNT(
+                SUM(
                   CASE
                     WHEN rp.`Approve_Status` = 'SFA' 
-                    THEN 1 
+                    THEN rp.Actual_Rx
+                    ELSE 0 
                   END
                 ) AS SFACount 
                 FROM (

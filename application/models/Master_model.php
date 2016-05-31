@@ -38,14 +38,17 @@ class Master_model extends MY_model {
         return $dropdown;
     }
 
-    function generateProfileDropdown($result) {
+    function generateProfileDropdown($result,$Doctor_Id="") {
         $dropdown = '';
         foreach ($result as $item) {
             $custom_field = isset($item) && $item->Profile_Status == 1 ? 'class="Profiled"' : '';
             $field_name = isset($item) && $item->Profile_Status == 1 ? $item->Account_Name . ' *' : $item->Account_Name;
-            $dropdown .= '<option value="' . $item->Account_ID . '" ' . $custom_field . '>' . $field_name . '</option>';
-
-
+            if ($item->Account_ID == $Doctor_Id) {
+                $dropdown .= '<option value="' . $item->Account_ID . '" ' . $custom_field . ' selected>' . $field_name . '</option>';
+            }  else {
+                $dropdown .= '<option value="' . $item->Account_ID . '" ' . $custom_field . '>' . $field_name . '</option>';
+            }
+ 
             $custom_field = '';
         }
         return $dropdown;

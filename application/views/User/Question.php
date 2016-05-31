@@ -19,14 +19,6 @@
         color:#FB3A3A;
         font-weight:bold;
     }
-    h1 {
-        font-family: Helvetica;
-        font-weight: 100;
-        color:#333;
-        padding-bottom:20px;
-
-    }
-
     .btn-default {
         background: none;
         border: none;
@@ -56,46 +48,49 @@ $attributes = array('id' => 'form1', 'name' => 'myform');
 echo validation_errors();
 echo form_open('User/Profiling', $attributes);
 ?>
-<div class="col-lg-12 col-md-12 ">
-    <div class="panel panel-default">
-        <div class="panel-heading">Profiling<span class="pull-left"><img id="loader" src="<?php echo asset_url() ?>/images/loader.gif" style="display: none"></span></div>
-        <div class="panel-body">
-            <div class="form-group">
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Profiling<span class="pull-left"><img id="loader" src="<?php echo asset_url() ?>/images/loader.gif" style="display: none"></span></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <?php
+                    if (isset($Product_Id) && $Product_Id == 1) {
+                        echo 'Select Hospital';
+                    } else {
+                        echo 'Select Doctor';
+                    }
+                    ?>
+
+                    <select disabled class="form-control" name="Doctor_id" id="Doctor_id" title="Please select Doctor/Hospital">
+                        <option value="">Please Select</option>
+                        <?php echo $doctorList; ?>        
+                    </select> 
+                    <input type="hidden" id="Status" name="Status" value="Draft">
+                    <input type="hidden" name="Doctor_id" value="Draft" value="<?php echo $_GET['Doctor_Id']; ?>">
+                </div>
+
                 <?php
-                if (isset($Product_Id) && $Product_Id == 1) {
-                    echo 'Select Hospital';
-                } else {
-                    echo 'Select Doctor';
+                if (isset($questionList) && !empty($questionList)) {
+                    foreach ($questionList as $Question) {
+                        ?>
+                        <div class="form-group">
+                            <?php echo $Question->Question ?>
+                            <?php echo $Question->name ?>
+                        </div>
+                        <?php
+                    }
                 }
                 ?>
-
-                <select class="form-control" name="Doctor_id" id="Doctor_id" title="Please select something!">
-                    <option value="">Please Select</option>
-                    <?php echo $doctorList; ?>        
-                </select> 
-                <input type="hidden" id="Status" name="Status" value="Draft">
             </div>
-
-            <?php
-            if (isset($questionList) && !empty($questionList)) {
-                foreach ($questionList as $Question) {
-                    ?>
-                    <div class="form-group">
-                        <?php echo $Question->Question ?>
-                        <?php echo $Question->name ?>
-                    </div>
-                    <?php
-                }
-            }
-            ?>
-        </div>
-        <div class="panel-footer">
-            <button type="submit" id="Save" class="btn btn-primary">Save</button>
-            <button type="submit" id="Submit" class="btn btn-danger">Submit</button>
+            <div class="panel-footer">
+                <button type="submit" id="Save" class="btn btn-primary">Save</button>
+                <button type="submit" id="Submit" class="btn btn-danger">Submit</button>
+            </div>
         </div>
     </div>
-</div>
 </form>
+</div>
 <script>
     $("#product").change(function () {
 
@@ -143,6 +138,7 @@ echo form_open('User/Profiling', $attributes);
 </script>
 <script>
     $('document').ready(function () {
+        getDoctorData();
 
         $('#form1').formValidation({
             message: 'This value is not valid',
@@ -253,10 +249,15 @@ echo form_open('User/Profiling', $attributes);
     });
 
     $("#Doctor_id").change(function () {
+        getDoctorData();
+    });
+
+    function getDoctorData() {
+        var Doctor_Id = $("#Doctor_id").val();
         $('#loader').show();
         $.ajax({
             type: 'POST',
-            data: {'Doctor_Id': $(this).val()},
+            data: {'Doctor_Id': Doctor_Id, 'Product_Id':<?php echo $_GET['Product_Id']; ?>},
             url: '<?php echo site_url('User/getProfilingData'); ?>',
             success: function (data) {
                 //alert(data);
@@ -322,8 +323,8 @@ echo form_open('User/Profiling', $attributes);
                 $('#loader').hide();
             }
         });
+    }
 
-    });
     $("input[type='number']").each(function () {
         $(this).attr('min', '0');
     });

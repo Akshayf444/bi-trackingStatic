@@ -15,6 +15,7 @@
         background-color: transparent;
     }
 </style>
+<?php $this->load->view('User/ProductList', array('site_url' => 'User/Reporting')); ?>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 well">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
         <span class="pull-left">Total Expected <?php
