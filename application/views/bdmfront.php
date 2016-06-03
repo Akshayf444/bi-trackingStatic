@@ -166,11 +166,11 @@
                                 <i class="fa fa-line-chart"></i> <span>Planning</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu treeview" style="display: none;">
-                                <li class=""><a href="<?php echo site_url('User/PlanningMenu'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
+                                <li class=""><a href="<?php echo site_url('User/Planning'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
 
-                                <li class=""><a href="<?php echo site_url('User/PriorityMenu'); ?>"><i class="fa fa-circle-o"></i>  Priotize</a></li>
+                                <li class=""><a href="<?php echo site_url('User/Priority'); ?>"><i class="fa fa-circle-o"></i>  Priotize</a></li>
 
-                                <li class=""><a href="<?php echo site_url('User/ActivityMenu'); ?>"><i class="fa fa-circle-o"></i>  Activity Planning</a></li>
+                                <li class=""><a href="<?php echo site_url('User/ActivityPlanning'); ?>"><i class="fa fa-circle-o"></i>  Activity Planning</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -179,9 +179,9 @@
                             </a>
                             <ul class="treeview-menu" style="display: none;">
 
-                                <li class=""><a href="<?php echo site_url('User/ReportingMenu'); ?>"><i class="fa fa-circle-o"></i>  Rx Reporting</a></li>
+                                <li class=""><a href="<?php echo site_url('User/Reporting'); ?>"><i class="fa fa-circle-o"></i>  Rx Reporting</a></li>
 
-                                <li class=""><a href="<?php echo site_url('User/ActivityReportingMenu'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
+                                <li class=""><a href="<?php echo site_url('User/ActivityReporting'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

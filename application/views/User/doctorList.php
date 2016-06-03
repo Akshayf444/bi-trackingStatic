@@ -90,7 +90,7 @@
 </div>
 <?php
 $attributes = array('id' => 'ProfilingForm');
-echo form_open('User/Planning', $attributes);
+echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -229,10 +229,10 @@ echo form_open('User/Planning', $attributes);
             <div class="">                
                 <?php if ($allApproved == TRUE) { ?>
                     <button type="button" id="Priority" class="btn btn-danger">Prioritize for activities</button>  
-                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>
+<!--                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>-->
                 <?php } else { ?>
-                    <button type="submit" id="Save" class="btn btn-primary">Save</button>
-                    <button type="submit" id="Approve" class="btn btn-info">Save For Approval</button>
+<!--                    <button type="submit" id="Save" class="btn btn-primary">Save</button>-->
+                    <button type="submit" id="Approve" class="btn btn-info">Save</button>
                 <?php } ?>
             </div>
         <?php } ?>
@@ -295,7 +295,7 @@ echo form_open('User/Planning', $attributes);
     }
 
     $("#Priority").click(function () {
-        var formAction = '<?php echo site_url('User/generatePriority'); ?>';
+        var formAction = '<?php echo site_url('User/generatePriority?Product_Id='.$this->Product_Id); ?>';
         $("#ProfilingForm").attr('action', formAction);
         $("#ProfilingForm").submit();
     });

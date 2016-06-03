@@ -440,7 +440,6 @@ class User extends MY_Controller {
 
     public function Planning() {
         $this->setProductId();
-
         $messages = array();
         $logmessage = array();
         if ($this->is_logged_in('BDM')) {
@@ -494,7 +493,7 @@ class User extends MY_Controller {
                             }
                             $doc['updated_at'] = date('Y-m-d H:i:s');
                             $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_Id' => $this->Product_Id, 'Doctor_Id' => $doc_id[$i], 'month' => $this->nextMonth));
-                            $this->db->update('Rx_Planning', $doc);
+                            //$this->db->update('Rx_Planning', $doc);
                             array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M') . '' . $this->nextYear . ' has been Updated successfully! Thank you!.', 'success'));
                             array_push($logmessage, 'The Planning for ' . date('M') . '' . $this->nextYear . ' has been Updated.');
                         } elseif (isset($result->Planning_Status) && $result->Planning_Status == 'Submitted') {
@@ -829,14 +828,7 @@ class User extends MY_Controller {
 
     public function Priority() {
         $data = array();
-        if ($this->input->get('Product_Id') > 0) {
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
-
-        if ($this->Product_Id == 1) {
-            $this->alertLabel = "Hospital";
-            $this->Individual_Type = "Hospital";
-        }
+        $this->setProductId();
         $messages = array();
         $logmessage = array();
         $doctor_ids = $this->User_model->PriorityIds();
@@ -1048,6 +1040,7 @@ class User extends MY_Controller {
     }
 
     public function generatePriority() {
+        $this->setProductId();
         if ($this->input->post()) {
 // if (empty($result)) {
             $currentPlanned = array_sum($this->input->post('value'));
@@ -1078,7 +1071,7 @@ class User extends MY_Controller {
                     $this->message = $this->Master_Model->DisplayAlert('Doctor Priority ' . date('M', strtotime($this->nextMonth)) . '' . $this->nextYear . ' has been Updated successfully! Thank you!.', 'success');
                 }
             }
-            redirect('User/priority', 'refresh');
+            redirect('User/priority?Product_Id = ' . $this->Product_Id, 'refresh');
         }
     }
 

@@ -44,7 +44,7 @@
 </style>
 <script src="<?php echo asset_url(); ?>js/bootstrap.min_1.js" type="text/javascript"></script>
 <?php $this->load->view('User/ProductList', array('site_url' => 'User/ActivityReporting')); ?>
-<?php echo form_open('User/ActivityReporting'); ?>
+<?php echo form_open('User/ActivityReporting?Product_Id = '.$this->Product_Id); ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 ">
         <div class="panel panel-default">

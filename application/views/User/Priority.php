@@ -1,5 +1,6 @@
 <link href="http://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="Stylesheet" type="text/css">
 <script src="<?php echo asset_url(); ?>js/jquery.dataTables.min.js" type="text/javascript"></script>
+<?php $this->load->view('User/ProductList', array('site_url' => 'User/Priority')); ?>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <span class="pull-right">
         Sort By
@@ -17,7 +18,7 @@
         </select>
     </span>
 </div>
-<?php echo form_open('User/Priority'); ?>
+<?php echo form_open('User/Priority?Product_Id = '.$this->Product_Id); ?>
 <div class="col-lg-12 col-md-12 ">
     <div class="panel panel-default">
         <div class="panel-heading">Set Priority</div>

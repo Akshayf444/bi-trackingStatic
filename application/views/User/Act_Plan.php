@@ -3,7 +3,7 @@
 <?php $this->load->view('User/ProductList', array('site_url' => 'User/ActivityPlanning')); ?>
 <?php
 $attributes = array('id' => 'form1');
-echo form_open('User/ActivityPlanning', $attributes);
+echo form_open('User/ActivityPlanning?Product_Id = '.$this->Product_Id, $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 ">

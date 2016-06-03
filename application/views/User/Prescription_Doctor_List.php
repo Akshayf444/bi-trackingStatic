@@ -81,7 +81,7 @@
 
     </div>
 </div>
-<?php echo form_open('User/Reporting'); ?>
+<?php echo form_open('User/Reporting?Product_Id = ' . $this->Product_Id); ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
         <div class="panel panel-default">
@@ -197,7 +197,7 @@
                                     <td> <input name = "value[]" type = "number" step="0.5" class="val" min="0" value = "<?php echo $doctor->Actual_Rx2 ?>"/></td>
                                 <?php } else { ?>
                                     <td> <input name = "value[]" type = "number" class="val" min="0" value = "<?php echo (int) $doctor->Actual_Rx2 ?>"/></td>
-                            <?php } ?>    
+                                <?php } ?>    
                             </tr>
                             <?php
                         }
@@ -205,18 +205,18 @@
                     ?>
                 </tbody>
             </table>
-<?php //echo isset($doctorList) ? $doctorList : ''    ?>
+            <?php //echo isset($doctorList) ? $doctorList : ''    ?>
             <input type="hidden" id="Status" name="Status" value="Draft">
             <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
             <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
             <!--        </div>-->
             <div class="panel-footer">
-                <button type="submit" id="Save" class="btn btn-primary">Save</button>
+                <!--                <button type="submit" id="Save" class="btn btn-primary">Save</button>-->
                 <?php if ($allApproved == TRUE) { ?>
-                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>
+<!--                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>-->
                 <?php } else { ?>
-                    <button type="submit" id="Approve" class="btn btn-info">Save For Approval</button>
-<?php } ?>
+                    <button type="submit" id="Approve" class="btn btn-info">Save</button>
+                <?php } ?>
 
             </div>
         </div>

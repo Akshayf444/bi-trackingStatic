@@ -230,46 +230,48 @@ class Admin extends MY_Controller {
                     $terr = '';
                     $territory = $this->User_model->getTerritory2(array("t.Territory = '" . $row['6'] . "'"));
 
-                    if (!in_array($row[0], $veevaids) && !in_array($row[10], $veevaids)) {
-                        if (!empty($territory)) {
-                            $territory = array_shift($territory);
-                            $terr = $territory->id;
-                            $data = array(
-                                'VEEVA_Employee_ID' => $row['0'],
-                                'Local_Employee_ID' => $row['1'],
-                                'First_Name' => $row['2'],
-                                'Middle_Name' => $row['3'],
-                                'Last_Name' => $row['4'],
-                                'Full_Name' => $row['5'],
-                                'Territory' => $terr,
-                                'Gender' => $row['7'],
-                                'Mobile' => $row['8'],
-                                'Email_ID' => $row['9'],
-                                'Username' => $row['10'],
-                                'Password' => $this->Encryption->encode($row['2'] . '@bi'),
-                                'Last_Login' => '',
-                                'Address_1' => $row['11'],
-                                'Address_2' => $row['12'],
-                                'City' => $row['13'],
-                                'State' => $row['14'],
-                                'Division' => $row['15'],
-                                'Product' => '',
-                                'Zone' => $row['16'],
-                                'Region' => $row['17'],
-                                'Profile' => $row['18'],
-                                'Designation' => $row['19'],
-                                'Created_By' => 'System',
-                                'Created_Date' => date('Y-m-d'),
-                                'Modified_By' => '',
-                                'Modified_Date' => '',
-                                'Date_of_Joining' => $row['20'],
-                                'DOB' => $row['21'],
-                                'Reporting_To' => $row['22'],
-                                'Reporting_VEEVA_ID' => $row['23'],
-                                'Reporting_Local_ID' => $row['24'],
-                                'Status' => '1',
-                                'password_status' => '',
-                            );
+
+                    if (!empty($territory)) {
+                        $territory = array_shift($territory);
+                        $terr = $territory->id;
+                        $data = array(
+                            'VEEVA_Employee_ID' => $row['0'],
+                            'Local_Employee_ID' => $row['1'],
+                            'First_Name' => $row['2'],
+                            'Middle_Name' => $row['3'],
+                            'Last_Name' => $row['4'],
+                            'Full_Name' => $row['5'],
+                            'Territory' => $terr,
+                            'Gender' => $row['7'],
+                            'Mobile' => $row['8'],
+                            'Email_ID' => $row['9'],
+                            'Username' => $row['10'],
+                            'Password' => $this->Encryption->encode($row['2'] . '@bi'),
+                            'Last_Login' => '',
+                            'Address_1' => $row['11'],
+                            'Address_2' => $row['12'],
+                            'City' => $row['13'],
+                            'State' => $row['14'],
+                            'Division' => $row['15'],
+                            'Product' => '',
+                            'Zone' => $row['16'],
+                            'Region' => $row['17'],
+                            'Profile' => $row['18'],
+                            'Designation' => $row['19'],
+                            'Created_By' => 'System',
+                            'Created_Date' => date('Y-m-d'),
+                            'Modified_By' => '',
+                            'Modified_Date' => '',
+                            'Date_of_Joining' => $row['20'],
+                            'DOB' => $row['21'],
+                            'Reporting_To' => $row['22'],
+                            'Reporting_VEEVA_ID' => $row['23'],
+                            'Reporting_Local_ID' => $row['24'],
+                            'Status' => '1',
+                            'password_status' => '',
+                        );
+                        if (!in_array($row[0], $veevaids) && !in_array($row[10], $veevaids)) {
+
 
                             $this->admin_model->insert_csv($data);
                             $message = 'Added New ' . $row['18'] . ' ' . $row['5'] . '[' . $row['0'] . '] ';
@@ -283,10 +285,15 @@ class Admin extends MY_Controller {
                             $this->User_model->insertLog($logdata);
                             $this->User_model->PasswordMail(array('VEEVA_Employee_ID' => $row['0'], 'created_at' => date('Y-m-d H:i:s')));
                         } else {
-                            array_push($errors, 'Terriotory ' . $row['6'] . ' Does Not Exist Territory Master .Please Add Territory First</b>');
+                            unset($data['Password']);
+                            unset($data['password_status']);
+                            unset($data['Last_Login']);
+                            unset($data['Password']);
+                            $this->db->where(array('VEEVA_Employee_ID' => $row['0']));
+                            $this->db->update('Employee_Master', $data);
                         }
                     } else {
-                        array_push($errors, 'Entry For ' . $row['2'] . ' Already Exist</b>');
+                        array_push($errors, 'Terriotory ' . $row['6'] . ' Does Not Exist Territory Master .Please Add Territory First</b>');
                     }
                 }
             }
@@ -1125,8 +1132,8 @@ class Admin extends MY_Controller {
                             <div class="info-box-content">
                                 <span class="info-box-text">Target</span>
                                 <span class="info-box-number"><?php
-            echo $target;
-            ?></span>
+                                    echo $target;
+                                    ?></span>
 
                             </div><!-- /.info-box-content -->
                         </div><!-- /.info-box -->
@@ -1141,8 +1148,8 @@ class Admin extends MY_Controller {
                             <div class="info-box-content">
                                 <span class="info-box-text">Planned</span>
                                 <span class="info-box-number"><?php
-                        echo $planned;
-            ?></span>
+                                    echo $planned;
+                                    ?></span>
                             </div><!-- /.info-box-content -->
                         </div><!-- /.info-box -->
                     </div><!-- /.col -->
