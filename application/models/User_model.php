@@ -1054,7 +1054,8 @@ class User_model extends CI_Model {
             $HTML .= '</table>
             <div class="panel-footer">';
             if ($allApproved == TRUE) {
-                $HTML .='<button type="submit" id="Submit" class="btn btn-danger">Submit</button>';
+                $HTML .= '';
+                //$HTML .='<button type="submit" id="Submit" class="btn btn-danger">Submit</button>';
             } else {
                 $HTML .='<button type="submit" id="Approve" class="btn btn-info">Save</button>';
             }
