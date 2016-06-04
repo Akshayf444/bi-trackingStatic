@@ -81,7 +81,7 @@
 
     </div>
 </div>
-<?php echo form_open('User/Reporting?Product_Id = ' . $this->Product_Id); ?>
+<?php echo form_open('User/Reporting?Product_Id=' . $this->Product_Id); ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
         <div class="panel panel-default">

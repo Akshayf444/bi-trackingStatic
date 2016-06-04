@@ -18,7 +18,7 @@
         </select>
     </span>
 </div>
-<?php echo form_open('User/Priority?Product_Id = '.$this->Product_Id); ?>
+<?php echo form_open('User/Priority?Product_Id='.$this->Product_Id); ?>
 <div class="col-lg-12 col-md-12 ">
     <div class="panel panel-default">
         <div class="panel-heading">Set Priority</div>

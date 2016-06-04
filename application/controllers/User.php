@@ -1071,7 +1071,7 @@ class User extends MY_Controller {
                     $this->message = $this->Master_Model->DisplayAlert('Doctor Priority ' . date('M', strtotime($this->nextMonth)) . '' . $this->nextYear . ' has been Updated successfully! Thank you!.', 'success');
                 }
             }
-            redirect('User/priority?Product_Id = ' . $this->Product_Id, 'refresh');
+            redirect('User/priority?Product_Id=' . $this->Product_Id, 'refresh');
         }
     }
 
