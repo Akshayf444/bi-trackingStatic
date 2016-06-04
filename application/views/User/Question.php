@@ -46,7 +46,7 @@
 <?php
 $attributes = array('id' => 'form1', 'name' => 'myform');
 echo validation_errors();
-echo form_open('User/Profiling', $attributes);
+echo form_open('User/Profiling?Product_Id=' . $this->Product_Id, $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
@@ -68,7 +68,7 @@ echo form_open('User/Profiling', $attributes);
                         <?php echo $doctorList; ?>        
                     </select> 
                     <input type="hidden" id="Status" name="Status" value="Draft">
-                    <input type="hidden" name="Doctor_id" value="Draft" value="<?php echo $_GET['Doctor_Id']; ?>">
+                    <input type="hidden" name="Doctor_id" value="<?php echo $_GET['Doctor_Id']; ?>">
                 </div>
 
                 <?php

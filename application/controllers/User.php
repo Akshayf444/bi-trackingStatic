@@ -251,15 +251,11 @@ class User extends MY_Controller {
 
     public function Profiling() {
         $Doctor_Id = '0';
-
-        if ($this->input->get('Product_Id') && $this->input->get('Doctor_Id')) {
+        
+        $this->setProductId();
+        
+        if ($this->input->get('Doctor_Id')) {
             $Doctor_Id = $this->input->get('Doctor_Id');
-            $this->Product_Id = $this->input->get('Product_Id');
-        }
-
-        if ($this->Product_Id == 1) {
-            $this->alertLabel = "Hospital";
-            $this->Individual_Type = 'Hospital';
         }
 
         $messages = array();
@@ -1522,6 +1518,7 @@ EMAILBODY;
     }
 
     function redirects($type, $product_id = 0) {
+
         if ($product_id > 0) {
             switch ($type) {
                 case 'Profiling':
@@ -1545,7 +1542,7 @@ EMAILBODY;
                     break;
             }
         } else {
-            redirect('User/dashboard', 'refresh');
+            //redirect('User/dashboard', 'refresh');
         }
     }
 
