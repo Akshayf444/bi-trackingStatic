@@ -1383,6 +1383,7 @@ EMAILBODY;
         $this->db->query($sql);
     }
 
+    /* ~~~~~~  END OF SCHEDULERS ~~~~~~*/
     public function Doctorlist() {
         $data = array('title' => 'Reset_Password', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
         $this->load->view('bdmfront', $data);

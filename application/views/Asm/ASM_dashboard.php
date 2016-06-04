@@ -62,12 +62,14 @@
                 <?php
                 $count ++;
             }
-               
-  if (isset($this->Division) && strtoupper($this->Division) == strtoupper('Thrombi')) { ?> 
-      
-                    <li>  <a style="padding:12px"     onclick="window.location = '<?php echo site_url('ASM/reporting_info'); ?>';" > Actilyse Dashboard </a></li>
-        
-    <?php } 
+
+            if (isset($this->Division) && strtoupper($this->Division) == strtoupper('Thrombi')) {
+                ?> 
+
+                <li>  <a style="padding:12px"     onclick="window.location = '<?php echo site_url('ASM/reporting_info'); ?>';" > Actilyse Dashboard </a></li>
+
+                <?php
+            }
         }
         ?>
     </ul>
@@ -81,7 +83,7 @@
                 if (isset($_GET['Product_Id'])) {
                     $object = new stdClass();
                     $object->id = $this->input->get('Product_Id');
-                    
+
                     $productlist = array($object);
                 }
                 ?>
@@ -118,8 +120,9 @@
                                     $kpi1 = 0;
                                     $kpi2 = 0;
                                     $actualLastMonth = 0;
-                                    $lastMonth = date('m', strtotime('-1 month'));
-                                    $lastYear = date('Y', strtotime('-1 month'));
+                                    $lastMonth = $this->User_model->calculateMonth($this->nextMonth, 1);
+                                    $lastYear = $this->User_model->calculateYear($this->nextMonth, 1);
+
                                     foreach ($Status as $value) {
                                         $LastMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $lastMonth, $lastYear);
                                         $currentMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $this->nextMonth, $this->nextYear);
@@ -165,14 +168,14 @@
                                     <div class="demo"  >        
 
                                         <input class="knob" id="kp3" readonly="" style="display: none" data-angleOffset=-125 data-angleArc=250 data-fgColor="#66EE66" value="<?php
-                                        if ($target > 0) {
+                                        if (isset($target) && $target > 0) {
                                             echo ($actual / $target) * 100;
                                         } else {
                                             echo 0;
                                         }
                                         ?>">
                                         <span style="margin-left: 116px;position: absolute;margin-top: -50px;"><?php
-                                            if ($target > 0) {
+                                            if (isset($target) && $target > 0) {
                                                 echo ($actual / $target) * 100;
                                             }
                                             ?>%</span>
@@ -186,18 +189,18 @@
                                     <div class="demo" >       
 
                                         <input class="knob" id="kp4"  readonly=""style="display: none"  data-angleOffset=-125 data-angleArc=250 data-fgColor="#66EE66" value="<?php
-                                        if ($dplanned > 0) {
+                                        if (isset($dplanned) && $dplanned > 0) {
                                             echo ($actplaned / $dplanned) * 100;
                                         } else {
                                             echo 0;
                                         }
                                         ?>">
                                         <span style="margin-left: 116px;position: absolute;margin-top: -50px;"><?php
-                                            if ($dplanned > 0) {
+                                            if (isset($dplanned) && $dplanned > 0) {
                                                 echo ($actplaned / $dplanned) * 100;
                                             }
                                             ?>%</span>
-                                        
+
                                         <span style="margin-left: 58px;position: absolute;margin-top: -35px"> <?php
                                             echo $doctor;
                                             ?> Engaged in Activity / Planned</span>
@@ -218,7 +221,7 @@
             </div>
         </div>  
 
-    <?php } //var_dump($dashboardDetails);   ?>
+    <?php } //var_dump($dashboardDetails);    ?>
 
 </div>
 <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
@@ -297,7 +300,8 @@
                     <?php
                     if (!empty($productlist)) {
                         $count = 1;
-                        foreach ($productlist as $product) {                            ?>
+                        foreach ($productlist as $product) {
+                            ?>
 
                             <div id="<?php echo $product->id ?>1" class="tab-pane fade <?php echo isset($count) && $count == 1 ? 'in active' : ''; ?>">
                                 <table class="table table-bordered">

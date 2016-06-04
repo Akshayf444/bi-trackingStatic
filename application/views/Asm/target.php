@@ -4,7 +4,7 @@ echo form_open('ASM/approveTarget', $attribute);
 ?>
 <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
     <div class="panel panel-default">
-        <div class="panel-heading"> Set New Target For <?PHP echo date('M Y'); ?></div>
+        <div class="panel-heading"> Set New Target For <?php echo $this->User_model->getMonthName($this->nextMonth); ?><?php echo $this->nextYear ?></div>
         <?php
         $allApproved = 1;
         if (isset($table) && !empty($table)) {
@@ -37,7 +37,7 @@ echo form_open('ASM/approveTarget', $attribute);
                         }
                         ?>
                         <tr>
-                            <td><input type="hidden" name="VEEVA_Employee_ID[]" value="<?php echo $tab->VEEVA_Employee_ID; ?>"><?php echo $tab->Full_Name; //." [".$tab->Local_Employee_ID ."]";    ?></td>
+                            <td><input type="hidden" name="VEEVA_Employee_ID[]" value="<?php echo $tab->VEEVA_Employee_ID; ?>"><?php echo $tab->Full_Name; //." [".$tab->Local_Employee_ID ."]";     ?></td>
                             <?php
                             $target1 = 0;
                             $target2 = 0;
