@@ -1542,7 +1542,7 @@ EMAILBODY;
                     break;
             }
         } else {
-            //redirect('User/dashboard', 'refresh');
+            redirect('User/dashboard', 'refresh');
         }
     }
 
