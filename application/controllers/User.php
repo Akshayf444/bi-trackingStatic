@@ -196,7 +196,9 @@ class User extends MY_Controller {
     }
 
     public function dashboard() {
+
         $this->load->model('admin_model');
+        $this->setCutOffDate();
         if ($this->is_logged_in('BDM')) {
             $data = array();
             $result = $this->Master_Model->BrandList($this->session->userdata('Division'));
@@ -440,6 +442,8 @@ class User extends MY_Controller {
 
     public function Planning() {
         $this->setProductId();
+        $created_at = $this->setCutOffDate();
+
         $messages = array();
         $logmessage = array();
         if ($this->is_logged_in('BDM')) {
@@ -457,7 +461,7 @@ class User extends MY_Controller {
 
                         $result = $this->User_model->PlanningExist($doc_id[$i]);
 //var_dump($result);
-                        $current_date = date('Y-m-d');
+                        $current_date = date('Y-m-d', strtotime($created_at));
                         $next_date = date('M');
                         $doc = array(
                             'Planned_Rx' => $value[$i],
@@ -469,14 +473,14 @@ class User extends MY_Controller {
                             'Planning_Status' => $this->input->post('Planning_Status')
                         );
                         if (empty($result)) {
-                            $doc['created_at'] = date('Y-m-d H:i:s');
+                            $doc['created_at'] = $created_at;
                             $doc['Approve_Status'] = 'Draft';
                             if ($this->input->post('Button_click_status') == 'SaveForApproval') {
                                 $doc['Approve_Status'] = 'SFA';
                             }
                             if ($this->User_model->Save_Planning($doc)) {
                                 array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M') . '' . $this->nextYear . ' has been saved successfully! Thank you!.', 'success'));
-                                array_push($logmessage, 'The Planning for ' . date('M') . '' . $this->nextYear . ' has been Added.');
+                                array_push($logmessage, 'The Planning for ' . date('M', strtotime($created_at)) . '' . $this->nextYear . ' has been Added.');
                             }
                         } elseif (isset($result->Planning_Status) && $result->Planning_Status == 'Draft') {
 
@@ -491,14 +495,14 @@ class User extends MY_Controller {
                             } else {
                                 $doc['Approve_Status'] = $result->Approve_Status;
                             }
-                            $doc['updated_at'] = date('Y-m-d H:i:s');
+                            $doc['updated_at'] = $created_at;
                             $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_Id' => $this->Product_Id, 'Doctor_Id' => $doc_id[$i], 'month' => $this->nextMonth));
                             //$this->db->update('Rx_Planning', $doc);
-                            array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M') . '' . $this->nextYear . ' has been Updated successfully! Thank you!.', 'success'));
-                            array_push($logmessage, 'The Planning for ' . date('M') . '' . $this->nextYear . ' has been Updated.');
+                            array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M', strtotime($created_at)) . '' . $this->nextYear . ' has been Updated successfully! Thank you!.', 'success'));
+                            array_push($logmessage, 'The Planning for ' . date('M', strtotime($created_at)) . '' . $this->nextYear . ' has been Updated.');
                         } elseif (isset($result->Planning_Status) && $result->Planning_Status == 'Submitted') {
-                            array_push($logmessage, 'The Planning for ' . date('M') . '' . $this->nextYear . ' Already Submitted.');
-                            array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M') . '' . $this->nextYear . ' Already Submitted ! Thank you!.', 'danger'));
+                            array_push($logmessage, 'The Planning for ' . date('M', strtotime($created_at)) . '' . $this->nextYear . ' Already Submitted.');
+                            array_push($messages, $this->Master_Model->DisplayAlert('The Planning for ' . date('M', strtotime($created_at)) . '' . $this->nextYear . ' Already Submitted ! Thank you!.', 'danger'));
                         }
                     }
                     if (!empty($messages)) {
@@ -524,7 +528,7 @@ class User extends MY_Controller {
             $current_month = $this->nextMonth;
             $data['show4'] = $this->User_model->Rx_Target_month2($this->session->userdata('VEEVA_Employee_ID'), $this->Product_Id, $current_month);
             $data['expected'] = $this->User_model->Expected_Rx($this->VEEVA_Employee_ID, $this->Product_Id, $this->nextMonth);
-            $data = array('title' => 'Planning', 'content' => 'User/doctorList', 'page_title' => 'Planning', 'backUrl' => 'User/PlanMenu', 'view_data' => $data);
+            $data = array('title' => 'Planning', 'content' => 'User/doctorList', 'page_title' => 'Planning For ' . $this->User_model->getMonthName($this->nextMonth) . ' ' . $this->nextYear, 'backUrl' => 'User/PlanMenu', 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
@@ -554,7 +558,7 @@ class User extends MY_Controller {
 
     public function ActivityPlanning() {
         $this->setProductId();
-
+        $created_at = $this->setCutOffDate();
         $check_planning = $this->User_model->priority_check($this->VEEVA_Employee_ID, $this->Product_Id, $this->nextMonth);
         if (!empty($check_planning)) {
             if ($this->Product_Id == 1) {
@@ -582,7 +586,7 @@ class User extends MY_Controller {
 
                         $result = $this->User_model->ActivityPlanned($docid[$i]);
                         if (empty($result)) {
-                            $data2['created_at'] = date('Y-m-d H:i:s');
+                            $data2['created_at'] = $created_at;
                             $data2['Approve_Status'] = 'Draft';
                             if ($this->input->post('Button_click_status') == 'SaveForApproval') {
                                 $data2['Approve_Status'] = 'SFA';
@@ -600,7 +604,7 @@ class User extends MY_Controller {
                                 array_push($messages, $this->Master_Model->DisplayAlert('Activity Planned Successfully.', 'success'));
                             }
                         } elseif (isset($result->Status) && $result->Status == 'Draft') {
-                            $data2['updated_at'] = date('Y-m-d H:i:s');
+                            $data2['updated_at'] = $created_at;
                             if ($result->Activity_Id != $Activity[$i]) {
                                 $data2['field_changed'] = 1;
                             }
@@ -651,7 +655,7 @@ class User extends MY_Controller {
         } else {
             $data['doctorList'] = "<h1>" . $this->alertLabel . " Are Not Prioritized</h1>";
         }
-        $data = array('title' => 'Activity Planning', 'content' => 'User/Act_Plan', 'backUrl' => 'User/PlanMenu', 'view_data' => $data);
+        $data = array('title' => 'Activity Planning', 'content' => 'User/Act_Plan', 'page_title' => 'Activity Planning For ' . $this->User_model->getMonthName($this->nextMonth) . ' ' . $this->nextYear, 'backUrl' => 'User/PlanMenu', 'view_data' => $data);
         $this->load->view('bdmfront', $data);
     }
 
@@ -729,6 +733,7 @@ class User extends MY_Controller {
         $cutoffdates = $this->User_model->CutOfDate();
         $current_month = $cutoffdates[0];
         $created_at = $cutoffdates[1];
+        $this->nextYear = date('Y', strtotime($created_at));
 
         $data['current_month'] = $current_month;
         if ($this->is_logged_in('BDM')) {
@@ -812,7 +817,7 @@ class User extends MY_Controller {
             } else {
                 $data['doctorList'] = "<h1>Please Save Planning First</h1>";
             }
-            $data = array('title' => 'Reporting Doctor', 'content' => 'User/Prescription_Doctor_List', 'page_title' => 'Reporting', 'backUrl' => 'User/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Reporting Doctor', 'content' => 'User/Prescription_Doctor_List', 'page_title' => 'Reporting For ' . $this->User_model->getMonthName($current_month) . ' ' . $this->nextYear, 'backUrl' => 'User/dashboard', 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
@@ -879,7 +884,7 @@ class User extends MY_Controller {
             redirect('User/dashboard', 'refresh');
         }
 
-        $data = array('title' => 'Set Priority', 'content' => 'User/Priority', 'backUrl' => 'User/dashboard', 'view_data' => $data);
+        $data = array('title' => 'Set Priority', 'content' => 'User/Priority', 'page_title' => 'Set Priority', 'backUrl' => 'User/dashboard', 'view_data' => $data);
         $this->load->view('bdmfront', $data);
     }
 
@@ -1020,7 +1025,7 @@ class User extends MY_Controller {
                 $data['doctorList'] = "Activity Planning Not Submitted";
             }
             $data['asm_comment'] = $this->User_model->ASM_comment_rep($this->VEEVA_Employee_ID, $this->Product_Id);
-            $data = array('title' => 'Activity Planning', 'content' => 'User/Act_Report', 'backUrl' => 'User/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Activity Planning', 'content' => 'User/Act_Report', 'backUrl' => 'User/dashboard', 'page_title' => 'Activity Reporting For ' . $this->User_model->getMonthname($current_month) . ' ' . $this->nextYear, 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
@@ -1495,6 +1500,25 @@ EMAILBODY;
             $this->Individual_Type = 'Hospital';
             $this->alertLabel = 'Hospital';
         }
+    }
+
+    function PlanCutOffDate() {
+        $current_day = date('d');
+        if ($current_day <= 3) {
+            $current_month = date('n', strtotime('-1 month'));
+            $created_at = date("Y-m-d", mktime(0, 0, 0, date("m"), 0, date("Y")));
+        } else {
+            $current_month = date('n');
+            $created_at = date('Y-m-d H:i:s');
+        }
+        return array($current_month, $created_at);
+    }
+
+    function setCutOffDate() {
+        $result = $this->PlanCutOffDate();
+        $this->nextMonth = $result[0];
+        $this->nextYear = date('Y', strtotime($result[1]));
+        return $result[1];
     }
 
 }

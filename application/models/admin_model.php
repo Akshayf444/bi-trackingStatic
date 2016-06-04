@@ -1313,7 +1313,7 @@ EMAILBODY;
                     ) AS Ac12 ,`VEEVA_Employee_ID`,Doctor_Id,MONTH,YEAR
                       FROM
                         `Rx_Actual` 
-                      WHERE YEAR = '$year' AND Actual_Rx > 0 AND Approve_Status = 'Approve'
+                      WHERE YEAR = '$year' AND Actual_Rx > 0 AND Approve_Status = 'Approved'
                         AND Product_id = {$product} GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
                       ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` 
                       AND rp.`Doctor_Id` = rx.`Doctor_Id` ";
@@ -1323,7 +1323,7 @@ EMAILBODY;
 
         $sql.=" ";
         $query = $this->db->query($sql);
-        //echo $sql . "<br/>";
+        ///echo $sql . "<br/>";
 
         return $query->result();
     }

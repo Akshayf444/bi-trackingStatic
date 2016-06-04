@@ -23,15 +23,14 @@
             } else {
                 echo "Rx";
             }
-            ?> Targeted For <?php echo date('M'); ?> <?php echo date('Y', strtotime($this->nextYear)); ?> : <b ><input type="text" class="form-control ck" style="width:40%" readonly="readonly" value="<?php echo isset($show4['target']) ? $show4['target'] : 0; ?>"></b></p>
+            ?> Targeted For <?php echo $this->User_model->getMonthName($this->nextMonth); ?> <?php echo $this->nextYear; ?> : <b ><input type="text" class="form-control ck" style="width:10%" readonly="readonly" value="<?php echo isset($show4['target']) ? $show4['target'] : 0; ?>"></b></p>
         <p>Balanced <?php
             if ($this->Product_Id == '1') {
                 echo "Vials";
             } else {
                 echo "Rx";
             }
-            ?> To Plan For <?php echo date('M'); ?> <?php echo date('Y', strtotime($this->nextYear)); ?>: <span class="ckk"></span></p>
-    </div>
+            ?> To Plan For <?php echo $this->User_model->getMonthName($this->nextMonth); ?> <?php echo $this->nextYear; ?>: <span class="ckk"></span></p> </div>
     <style>
         ul {
             list-style-type: none;
@@ -90,7 +89,7 @@
 </div>
 <?php
 $attributes = array('id' => 'ProfilingForm');
-echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
+echo form_open('User/Planning?Product_Id=' . $this->Product_Id, $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -103,6 +102,11 @@ echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
                 <tr>
                     <th>
                         <?php
+                        $month1 = $this->User_model->calculateMonth($this->nextMonth, 3);
+                        $month2 = $this->User_model->calculateMonth($this->nextMonth, 2);
+                        $month3 = $this->User_model->calculateMonth($this->nextMonth, 1);
+                        $month4 = $this->User_model->calculateMonth($this->nextMonth, 0);
+
                         if ($this->Product_Id == 1) {
                             $vials = "Vials";
                             $hospital = "Hospital";
@@ -120,19 +124,19 @@ echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
                     <?php } ?>
 
 
-                    <th><?php echo date('M', strtotime('-3 month')) . $vials; ?> </th>
-                    <th><?php echo date('M', strtotime('-2 month')) . $vials; ?></th>
-                    <th><?php echo date('M', strtotime('-1 month')) . $vials; ?></th>
-                    <th>New <?php echo $vials; ?> Targeted For <?php echo date('M'); ?> </th>
-                    <th>New <?php echo $vials; ?> Targeted For <?php echo date('M'); ?> </th>
+                    <th><?php echo $this->User_model->getMonthName($month1) . $vials; ?> </th>
+                    <th><?php echo $this->User_model->getMonthName($month2) . $vials; ?></th>
+                    <th><?php echo $this->User_model->getMonthName($month3) . $vials; ?></th>
+                    <th>New <?php echo $vials; ?> Targeted For <?php echo $this->User_model->getMonthName($month4); ?> </th>
+                    <th>New <?php echo $vials; ?> Targeted For <?php echo $this->User_model->getMonthName($month4); ?> </th>
                 </tr>
             </thead>
             <tbody>
 
                 <?php
-                $month = date('n', strtotime('-1 month'));
+                $month = $month4;
                 $lastMonthRx = $this->User_model->countLastMonthRx($month);
-                $currentMonthRx = $this->User_model->countPlannedRx(date('n'));
+                $currentMonthRx = $this->User_model->countPlannedRx($month4);
                 $allApproved = TRUE;
                 if (isset($result) && !empty($result)) {
                     foreach ($result as $doctor) {
@@ -140,14 +144,10 @@ echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
                         $actual_rx = isset($doctor->Actual_Rx) ? $doctor->Actual_Rx : "";
 
 
-                        $month1 = date('n', strtotime('-3 month'));
-                        $month2 = date('n', strtotime('-2 month'));
-                        $month3 = date('n', strtotime('-1 month'));
-                        $month4 = date('n');
-                        $year1 = date('Y', strtotime('-3 month'));
-                        $year2 = date('Y', strtotime('-2 month'));
-                        $year3 = date('Y', strtotime('-1 month'));
-                        $year4 = date('Y');
+                        $year1 = $this->User_model->calculateYear($this->nextMonth, 3);
+                        $year2 = $this->User_model->calculateYear($this->nextMonth, 2);
+                        $year3 = $this->User_model->calculateYear($this->nextMonth, 1);
+                        $year4 = $this->User_model->calculateYear($this->nextMonth, 0);
 
                         $month1Actual = 0;
                         $month2Actual = 0;
@@ -229,9 +229,9 @@ echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
             <div class="">                
                 <?php if ($allApproved == TRUE) { ?>
                     <button type="button" id="Priority" class="btn btn-danger">Prioritize for activities</button>  
-<!--                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>-->
+                    <!--                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>-->
                 <?php } else { ?>
-<!--                    <button type="submit" id="Save" class="btn btn-primary">Save</button>-->
+                    <!--                    <button type="submit" id="Save" class="btn btn-primary">Save</button>-->
                     <button type="submit" id="Approve" class="btn btn-info">Save</button>
                 <?php } ?>
             </div>
@@ -295,7 +295,7 @@ echo form_open('User/Planning?Product_Id='.$this->Product_Id, $attributes);
     }
 
     $("#Priority").click(function () {
-        var formAction = '<?php echo site_url('User/generatePriority?Product_Id='.$this->Product_Id); ?>';
+        var formAction = '<?php echo site_url('User/generatePriority?Product_Id=' . $this->Product_Id); ?>';
         $("#ProfilingForm").attr('action', formAction);
         $("#ProfilingForm").submit();
     });

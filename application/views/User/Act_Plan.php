@@ -3,19 +3,14 @@
 <?php $this->load->view('User/ProductList', array('site_url' => 'User/ActivityPlanning')); ?>
 <?php
 $attributes = array('id' => 'form1');
-echo form_open('User/ActivityPlanning?Product_Id = '.$this->Product_Id, $attributes);
+echo form_open('User/ActivityPlanning?Product_Id=' . $this->Product_Id, $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 ">
-        <div class="panel panel-default">
-            <div class="panel-heading">Activity Planning</div>
-            <div class="panel-body">   
-                <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
-                <input type="hidden" id="Status" name="Status" value="Draft">
-                <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
-                <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
-            </div>
-        </div>
+        <?php echo isset($doctorList) && !empty($doctorList) ? $doctorList : ''; ?>
+        <input type="hidden" id="Status" name="Status" value="Draft">
+        <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
+        <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
     </div>
 </div>
 </form>

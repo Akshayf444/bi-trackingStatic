@@ -10,10 +10,7 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <!-- Ionicons -->
         <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-        <!-- Morris chart -->
-<!--        <link href="<?php echo asset_url() ?>dashboard/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-         jvectormap 
-        <link href="<?php echo asset_url() ?>dashboard/plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />-->
+
 
         <!-- Theme style -->
         <link href="<?php echo asset_url() ?>dashboard/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
@@ -48,6 +45,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
         <style>
+            #overlay {
+                position: fixed;
+                z-index: 999;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: none;
+                background-color: rgba(0,0,0,.5);
+            }
+
             .navbar {
                 border-bottom: 1px solid #e7e7e7;
                 border-radius: 0px; 
@@ -151,7 +159,7 @@
 
                                 <li class=""><a href="<?php echo site_url('User/Doctorlist'); ?>"><i class="fa fa-circle-o"></i>  Doctors</a></li>
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');           ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
+                                <li class=""><a href="<?php //echo site_url('User/view_doctor');            ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
                             </ul>
                         </li>
                         <li>
@@ -192,7 +200,7 @@
 
                                 <li class=""><a href="<?php echo site_url('User/monthlyTrend') . '?Zone=' . $this->Zone . '&Division=' . $this->Division . '&Territory=' . $this->Territory; ?>"><i class="fa fa-circle-o"></i>  Rx </a></li>
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');           ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
+                                <li class=""><a href="<?php //echo site_url('User/view_doctor');            ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
                             </ul>
                         </li>
 
@@ -210,10 +218,6 @@
                         <small></small>
                     </h1>
                 </section>
-                <?php
-//        echo $this->session->userdata('message') ? $this->session->userdata('message') : '';
-//        $this->session->unset_userdata('message');
-                ?>
 
                 <!-- Main content -->
                 <section class="content">
@@ -246,7 +250,7 @@
             <script src="<?php echo asset_url() ?>dashboard/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
             <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
             <!-- AdminLTE App -->
-            <script src="<?php echo asset_url() ?>dashboard/dist/js/app.min.js" type="text/javascript"></script>
+            <script src="<?php echo asset_url() ?>dashboard/dist/js/app.js" type="text/javascript"></script>
             <script type="text/javascript">
             var config = {
                 '.chosen-select': {},

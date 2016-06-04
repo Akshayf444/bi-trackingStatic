@@ -451,7 +451,7 @@ class User_model extends CI_Model {
                 $hospital = "Doctor";
             }
 
-            $html .= '<table class="table table-bordered" id="datatable">
+            $html .= '<table class="table table-bordered panel" id="datatable">
                 <thead>
                 <tr>
                     <th>' . $hospital . ' List</th>';
@@ -464,12 +464,17 @@ class User_model extends CI_Model {
                 }
             }
 
-            $html .= '<th>' . date('M', strtotime('-3 month')) . $vials . ' </th>
-                            <th>' . date('M', strtotime('-2 month')) . $vials . '</th>
-                            <th>' . date('M', strtotime('-1 month')) . $vials . '</th>
-                            <th>New ' . $vials . ' Targeted For ' . date('M', strtotime($this->nextMonth)) . ' </th>';
+            $month1 = $this->User_model->calculateMonth($this->nextMonth, 3);
+            $month2 = $this->User_model->calculateMonth($this->nextMonth, 2);
+            $month3 = $this->User_model->calculateMonth($this->nextMonth, 1);
+            $month4 = $this->User_model->calculateMonth($this->nextMonth, 0);
+
+            $html .= '<th>' . $this->User_model->getMonthName($month1) . $vials . ' </th>
+                            <th>' . $this->User_model->getMonthName($month2) . $vials . '</th>
+                            <th>' . $this->User_model->getMonthName($month3) . $vials . '</th>
+                            <th>New ' . $vials . ' Targeted For ' . $this->User_model->getMonthName($month4) . ' </th>';
             if ($type == 'Planning') {
-                $html .= '<th>New ' . $vials . ' Targeted For ' . date('M', strtotime($this->nextMonth)) . ' </th></tr></thead><tbody>';
+                $html .= '<th>New ' . $vials . ' Targeted For ' . $this->User_model->getMonthName($month4) . ' </th></tr></thead><tbody>';
             } elseif ($type == 'Actual') {
                 $html .= '<th>Cumulative Month to Date</th><th>Actual</th></tr></thead><tbody>';
             } else {
@@ -486,14 +491,10 @@ class User_model extends CI_Model {
                     $actual_rx = isset($doctor->Actual_Rx) ? $doctor->Actual_Rx : "";
 
 
-                    $month1 = date('n', strtotime('-3 month'));
-                    $month2 = date('n', strtotime('-2 month'));
-                    $month3 = date('n', strtotime('-1 month'));
-                    $month4 = date('n');
-                    $year1 = date('Y', strtotime('-3 month'));
-                    $year2 = date('Y', strtotime('-2 month'));
-                    $year3 = date('Y', strtotime('-1 month'));
-                    $year4 = date('Y');
+                    $year1 = $this->User_model->calculateYear($this->nextMonth, 3);
+                    $year2 = $this->User_model->calculateYear($this->nextMonth, 2);
+                    $year3 = $this->User_model->calculateYear($this->nextMonth, 1);
+                    $year4 = $this->User_model->calculateYear($this->nextMonth, 0);
 
                     $month1Actual = 0;
                     $month2Actual = 0;
@@ -538,7 +539,7 @@ class User_model extends CI_Model {
 
 
                     if ($priority == 'true') {
-                        $result = $this->User_model->ActualPriorityExist($doctor->Account_ID);
+                        $result = $this->User_model->ActualPriorityExist($doctor->Account_ID, $this->nextMonth);
                         if (!empty($result)) {
                             $html .= '<tr>
                         <td><input type = "checkbox" name = "priority[]" checked="checked" value = "' . $doctor->Account_ID . '" >   ' . $doctor->Account_Name . '';
@@ -758,6 +759,7 @@ class User_model extends CI_Model {
         $this->db->from('Rx_Actual');
         $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_Id' => $this->Product_Id, 'month' => $this->nextMonth, 'Year' => $this->nextYear, 'Approve_Status' => 'Approved'));
         $query = $this->db->get();
+        //echo $this->db->last_query();
         return $query->row_array();
     }
 
@@ -958,7 +960,7 @@ class User_model extends CI_Model {
         $Activities = $this->getActivityList();
 
         if (!empty($result)) {
-            $HTML = '<table class="table table-bordered">';
+            $HTML = '<table class="table table-bordered panel">';
             $HTML .= '<tr>
                                 <th>
                                     ' . $hospital . ' Name
@@ -1052,14 +1054,14 @@ class User_model extends CI_Model {
                 $HTML .= '</tr>';
             }
             $HTML .= '</table>
-            <div class="panel-footer">';
+            <div class="row"><div class="col-lg-12 col-xs-12">';
             if ($allApproved == TRUE) {
                 $HTML .= '';
                 //$HTML .='<button type="submit" id="Submit" class="btn btn-danger">Submit</button>';
             } else {
                 $HTML .='<button type="submit" id="Approve" class="btn btn-info">Save</button>';
             }
-            $HTML .='</div>';
+            $HTML .='</div></div>';
         }
 
         return $HTML;
@@ -1137,7 +1139,7 @@ class User_model extends CI_Model {
     function ActivityReportingExist($Doctor_Id = "", $month = "") {
         $this->db->select('*');
         $this->db->from('Activity_Reporting');
-        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => $month, 'Year' => $this->nextYear));
+        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => (int) $month, 'Year' => $this->nextYear));
         $query = $this->db->get();
         return $query->row();
     }
@@ -1145,7 +1147,7 @@ class User_model extends CI_Model {
     function ActivityPlanned($Doctor_Id = "") {
         $this->db->select('*');
         $this->db->from('Activity_Planning');
-        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => $this->nextMonth, 'Year' => $this->nextYear));
+        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => (int) $this->nextMonth, 'Year' => $this->nextYear));
         $query = $this->db->get();
         return $query->row();
     }

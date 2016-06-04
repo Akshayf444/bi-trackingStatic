@@ -41,6 +41,7 @@ if (isset($_GET['Product_Id'])) {
 
         foreach ($productlist as $product) {
             $Product_id = $product->id;
+            $this->Product_Id = $Product_id;
             //echo $Product_id;
             $Planned_count = 0;
             $Actual_count = 0;
@@ -81,12 +82,12 @@ if (isset($_GET['Product_Id'])) {
             $target = isset($target['target']) && $target['Status'] == 'Submitted' ? $target['target'] : 0;
 
             /// KPI Calculation
-            if (isset($target['target']) && $target['target'] > 0) {
-                $kpi1 = ($actualrx['Actual_Rx'] / $target['target']) * 100;
+            if (isset($target) && $target > 0) {
+                $kpi1 = ($actualrx['Actual_Rx'] / $target) * 100;
             } else {
                 $kpi1 = 0;
             }
-            if ($activity_planned ['activity_planned'] > 0) {
+            if (isset($activity_planned ['activity_planned']) && $activity_planned ['activity_planned'] > 0) {
                 $kpi2 = ($activitya_actual['activity_actual'] / $activity_planned ['activity_planned']) * 100;
             } else {
                 $kpi2 = 0;
@@ -97,6 +98,7 @@ if (isset($_GET['Product_Id'])) {
             $monthData1 = array();
             $monthData2 = array();
             $monthData3 = array();
+            
             for ($i = 1; $i <= 12; $i++) {
                 $monthname = date('M', mktime(0, 0, 0, $i, 1, date('Y'))); //Month Name
                 array_push($xAxisData1, $monthname);

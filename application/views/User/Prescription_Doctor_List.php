@@ -84,10 +84,10 @@
 <?php echo form_open('User/Reporting?Product_Id=' . $this->Product_Id); ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">Reporting For <?php echo $this->User_model->getMonthName($current_month); ?></div>
+<!--        <div class="panel panel-default">
+            <div class="panel-heading">Reporting For <?php //echo $this->User_model->getMonthName($current_month); ?></div>-->
             <!--        <div class="panel-body">-->
-            <table class="table table-bordered" id="datatable">
+            <table class="table table-bordered panel" id="datatable">
                 <thead>
                     <tr>
                         <th>
@@ -210,7 +210,7 @@
             <input type="hidden" id="Approve_Status" name="Approve_Status" value="">
             <input type="hidden" id="Button_click_status" name="Button_click_status" value="Save">
             <!--        </div>-->
-            <div class="panel-footer">
+<!--            <div class="panel-footer">-->
                 <!--                <button type="submit" id="Save" class="btn btn-primary">Save</button>-->
                 <?php if ($allApproved == TRUE) { ?>
 <!--                    <button type="submit" id="Submit" class="btn btn-success">Submit</button>-->
@@ -218,8 +218,8 @@
                     <button type="submit" id="Approve" class="btn btn-info">Save</button>
                 <?php } ?>
 
-            </div>
-        </div>
+<!--            </div>
+        </div>-->
     </div>
 </div>
 </form>

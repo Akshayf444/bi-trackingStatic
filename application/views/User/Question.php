@@ -50,6 +50,7 @@ echo form_open('User/Profiling', $attributes);
 ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
+        <a onclick="window.history.back();" class="badge btn-success pull-right"><i class="fa fa-arrow-circle-left"></i> Go Back</a>
         <div class="panel panel-default">
             <div class="panel-heading">Profiling<span class="pull-left"><img id="loader" src="<?php echo asset_url() ?>/images/loader.gif" style="display: none"></span></div>
             <div class="panel-body">
