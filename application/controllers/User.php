@@ -302,7 +302,7 @@ class User extends MY_Controller {
                             );
 //$this->User_model->insertLog($logdata);
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Added Successfully.', 'success'));
-                            redirect('User/Profiling', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         } elseif ($this->Product_Id == 5) {
                             $_POST['Product_id'] = 5;
                             $this->db->insert('Profiling', $_POST);
@@ -328,7 +328,7 @@ class User extends MY_Controller {
                             );
 //$this->User_model->insertLog($logdata);
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Added Successfully.', 'success'));
-                            redirect('User/Profiling', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         } else {
                             $this->db->insert('Profiling', $_POST);
                             $message = "Profile Added For " . $_POST['Doctor_id'];
@@ -341,7 +341,7 @@ class User extends MY_Controller {
                             );
 //$this->User_model->insertLog($logdata);
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Added Successfully.', 'success'));
-                            redirect('User/Profiling', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         }
                     } elseif ($check['Status'] == 'Draft') {
                         $_POST['updated_at'] = date('Y-m-d H:i:s');
@@ -371,7 +371,7 @@ class User extends MY_Controller {
                             );
 //$this->User_model->insertLog($logdata);
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Updated Successfully.', 'success'));
-                            redirect('User/Profiling', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         } elseif ($this->Product_Id == 5) {
                             $_POST['Product_id'] = 5;
                             $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_id' => 5, 'Doctor_id' => $_POST['Doctor_id'], 'Cycle' => $this->Cycle));
@@ -397,7 +397,7 @@ class User extends MY_Controller {
                             );
 //$this->User_model->insertLog($logdata);
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Updated Successfully.', 'success'));
-                            redirect('User/Profiling', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         } else {
                             $this->db->where(array('VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Product_id' => $this->Product_Id, 'Doctor_id' => $_POST['Doctor_id'], 'Cycle' => $this->Cycle));
                             $this->db->update('Profiling', $_POST);
@@ -412,7 +412,7 @@ class User extends MY_Controller {
                                 'Profile' => 'BDM',
                             );
 //$this->User_model->insertLog($logdata);
-                            redirect('User/Doctorlist2', 'refresh');
+                            $this->redirects('Profiling', $this->Product_Id);
                         }
                     } elseif ($check['Status'] == 'Submitted') {
                         $this->session->set_userdata('message', $this->Master_Model->DisplayAlert($this->alertLabel . ' Profile Already Submitted .', 'danger'));
@@ -518,7 +518,7 @@ class User extends MY_Controller {
                         $this->User_model->insertLog($logdata);
                     }
 
-                    redirect('User/dashboard', 'refresh');
+                    $this->redirects('Planning', $this->Product_Id);
                 }
             } else {
                 $message = $this->Master_Model->DisplayAlert('Target Is Not Assigned.', 'danger');
@@ -650,7 +650,7 @@ class User extends MY_Controller {
                     );
                     $this->User_model->insertLog($logdata);
                 }
-                redirect('User/dashboard', 'refresh');
+                $this->redirects('ActivityPlanning', $this->Product_Id);
             }
         } else {
             $data['doctorList'] = "<h1>" . $this->alertLabel . " Are Not Prioritized</h1>";
@@ -810,7 +810,7 @@ class User extends MY_Controller {
                         );
                         $this->User_model->insertLog($logdata);
                     }
-                    redirect('User/dashboard', 'refresh');
+                    $this->redirects('Reporting', $this->Product_Id);
                 }
 
 //echo $data['doctorList'] ;
@@ -1019,7 +1019,7 @@ class User extends MY_Controller {
                         );
                         $this->User_model->insertLog($logdata);
                     }
-                    redirect('User/dashboard', 'refresh');
+                    $this->redirects('ActivityReporting', $this->Product_Id);
                 }
             } else {
                 $data['doctorList'] = "Activity Planning Not Submitted";
@@ -1519,6 +1519,34 @@ EMAILBODY;
         $this->nextMonth = $result[0];
         $this->nextYear = date('Y', strtotime($result[1]));
         return $result[1];
+    }
+
+    function redirects($type, $product_id = 0) {
+        if ($product_id > 0) {
+            switch ($type) {
+                case 'Profiling':
+                    redirect('User/DoctorList2?Product_Id=' . $product_id, 'refresh');
+                    break;
+                case 'Planning':
+                    redirect('User/Planning?Product_Id=' . $product_id, 'refresh');
+                    break;
+                case 'ActivityPlanning':
+                    redirect('User/ActivityPlanning?Product_Id=' . $product_id, 'refresh');
+                    break;
+                case 'Reporting':
+                    redirect('User/Reporting?Product_Id=' . $product_id, 'refresh');
+                    break;
+                case 'ActivityReporting':
+                    redirect('User/Profiling?Product_Id=' . $product_id, 'refresh');
+                    break;
+
+                default:
+                    redirect('User/dashboard?Product_Id=' . $product_id, 'refresh');
+                    break;
+            }
+        } else {
+            redirect('User/dashboard', 'refresh');
+        }
     }
 
 }
