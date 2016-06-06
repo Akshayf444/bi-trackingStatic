@@ -151,16 +151,10 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-user"></i> <span>Customer</span> <i class="fa fa-angle-left pull-right"></i>
+                        <li>
+                            <a href="<?php echo site_url('User/Doctorlist'); ?>">
+                                <i class="fa fa-user"></i> <span>Customer</span> 
                             </a>
-                            <ul class="treeview-menu" style="display: none;">
-
-                                <li class=""><a href="<?php echo site_url('User/Doctorlist'); ?>"><i class="fa fa-circle-o"></i>  Doctors</a></li>
-
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');            ?>"><i class="fa fa-circle-o"></i>  Hospital</a></li>
-                            </ul>
                         </li>
                         <li>
                             <a href="<?php echo site_url('User/Doctorlist2'); ?>">
@@ -200,7 +194,7 @@
 
                                 <li class=""><a href="<?php echo site_url('User/monthlyTrend') . '?Zone=' . $this->Zone . '&Division=' . $this->Division . '&Territory=' . $this->Territory; ?>"><i class="fa fa-circle-o"></i>  Rx </a></li>
 
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');            ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
+                                <li class=""><a href="<?php //echo site_url('User/view_doctor');               ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
                             </ul>
                         </li>
 
@@ -262,6 +256,15 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
+
+
+            var oTable = $('#datatable').dataTable({
+                "bPaginate": false,
+                "bInfo": false,
+                "info": false,
+            });
+
             </script>
+        </div>
     </body>
 </html>

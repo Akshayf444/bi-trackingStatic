@@ -1385,7 +1385,8 @@ EMAILBODY;
 
     /* ~~~~~~  END OF SCHEDULERS ~~~~~~*/
     public function Doctorlist() {
-        $data = array('title' => 'Reset_Password', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
+        
+        $data = array('title' => 'Customer List', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
         $this->load->view('bdmfront', $data);
     }
 
@@ -1484,6 +1485,7 @@ EMAILBODY;
         $this->load->view('bdmfront', $data);
     }
 
+    /// setting Product Id For Tabs
     function setProductId() {
         if ($this->input->get('Product_Id') > 0) {
             $this->Product_Id = $this->input->get('Product_Id');
@@ -1499,6 +1501,7 @@ EMAILBODY;
         }
     }
 
+    ///Calculating Planning CutOffDates
     function PlanCutOffDate() {
         $current_day = date('d');
         if ($current_day <= 3) {
@@ -1511,6 +1514,7 @@ EMAILBODY;
         return array($current_month, $created_at);
     }
 
+    ///Setting CutOffDates
     function setCutOffDate() {
         $result = $this->PlanCutOffDate();
         $this->nextMonth = $result[0];
@@ -1518,8 +1522,8 @@ EMAILBODY;
         return $result[1];
     }
 
+    ///BDM Panel Redirects
     function redirects($type, $product_id = 0) {
-
         if ($product_id > 0) {
             switch ($type) {
                 case 'Profiling':
