@@ -1386,7 +1386,8 @@ EMAILBODY;
     /* ~~~~~~  END OF SCHEDULERS ~~~~~~ */
 
     public function Doctorlist() {
-        $data = array('title' => 'Reset_Password', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
+        
+        $data = array('title' => 'Customer List', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
         $this->load->view('bdmfront', $data);
     }
 
@@ -1485,6 +1486,7 @@ EMAILBODY;
         $this->load->view('bdmfront', $data);
     }
 
+    /// setting Product Id For Tabs
     function setProductId() {
         if ($this->input->get('Product_Id') > 0) {
             $this->Product_Id = $this->input->get('Product_Id');
@@ -1500,27 +1502,8 @@ EMAILBODY;
         }
     }
 
-    function PlanCutOffDate() {
-        $current_day = date('d');
-        if ($current_day <= 3) {
-            $current_month = date('n', strtotime('-1 month'));
-            $created_at = date("Y-m-d", mktime(0, 0, 0, date("m"), 0, date("Y")));
-        } else {
-            $current_month = date('n');
-            $created_at = date('Y-m-d H:i:s');
-        }
-        return array($current_month, $created_at);
-    }
-
-    function setCutOffDate() {
-        $result = $this->PlanCutOffDate();
-        $this->nextMonth = $result[0];
-        $this->nextYear = date('Y', strtotime($result[1]));
-        return $result[1];
-    }
-
+    ///BDM Panel Redirects
     function redirects($type, $product_id = 0) {
-
         if ($product_id > 0) {
             switch ($type) {
                 case 'Profiling':

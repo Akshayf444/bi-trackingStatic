@@ -3,10 +3,10 @@
         <table class="table table-bordered panel" id="datatable">
             <thead>
                 <tr>
-                    <td>VEEVA ID</td>
-                    <td>Doctor Name</td>
-                    <td>Specialty</td>
-                    <td>Action</td>
+                    <th>VEEVA ID</th>
+                    <th>Doctor Name</th>
+                    <th>Specialty</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,10 +20,3 @@
         </table>
     </div>
 </div>
-<script>
-    var oTable = $('#datatable').dataTable({
-        "bPaginate": false,
-        "bInfo": false,
-        "info": false,
-    });
-</script>

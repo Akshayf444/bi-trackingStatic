@@ -19,17 +19,7 @@ class ASM extends MY_Controller {
     }
 
     function calcPlanning() {
-        $this->db->select('*');
-        $this->db->from('Setting');
-        $this->db->where('Current_Month', date('n'));
-        $query = $this->db->get();
-        $result = $query->result();
-        if (!empty($result)) {
-            foreach ($result as $value) {
-                $this->nextMonth = $value->Planned_For_Month;
-                $this->nextYear = $value->Planned_For_Year;
-            }
-        }
+        $this->setCutOffDate();
     }
 
     public function dashboard() {
@@ -44,8 +34,8 @@ class ASM extends MY_Controller {
             $productlist = array($object);
             $data['productlist'] = $productlist;
 
-            $data = array('title' => 'Main', 'content' => 'ASM/ASM_dashboard', 'view_data' => $data);
-            $this->load->view('template2', $data);
+            $data = array('title' => 'Main', 'content' => 'ASM/ASM_dashboard', 'page_title' => 'Dashboard', 'view_data' => $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -54,7 +44,7 @@ class ASM extends MY_Controller {
     public function Planning() {
         if ($this->is_logged_in('ASM')) {
             $data = array('title' => 'Planning', 'content' => 'ASM/asm_planning', 'backUrl' => 'ASM/dashboard', 'view_data' => 'blank');
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         }
     }
 
@@ -77,15 +67,15 @@ class ASM extends MY_Controller {
                     $data['ck'] = "ThromBI";
                 }
             }
-            $data = array('title' => 'Target', 'content' => 'ASM/target', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
-            $this->load->view('template2', $data);
+            $data = array('title' => 'Target', 'content' => 'ASM/target', 'backUrl' => 'ASM/dashboard', 'page_title' => 'Assign Target', 'view_data' => $data);
+            $this->load->view('asmfront', $data);
         }
     }
 
     public function reporting() {
         if ($this->is_logged_in('ASM')) {
             $data = array('title' => 'Planning', 'content' => 'ASM/Asm_Reporting', 'backUrl' => 'ASM/dashboard', 'view_data' => 'blank');
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         }
     }
 
@@ -114,8 +104,8 @@ class ASM extends MY_Controller {
                 $data['product'] = $this->Master_Model->generateDropdown($result2, 'id', 'Brand_Name', $product);
                 $data['show'] = $this->User_model->getPlanningAproval($id, $product, $this->nextMonth);
             }
-            $data = array('title' => 'Report', 'content' => 'ASM/Asm_rxplanning', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
-            $this->load->view('template2', $data);
+            $data = array('title' => 'Report', 'content' => 'ASM/Asm_rxplanning', 'page_title' => 'Approve Planning', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -314,9 +304,9 @@ class ASM extends MY_Controller {
                 $data['Doctorlist'] = $this->User_model->generateActivityTable2($result);
             }
 
-            $data = array('title' => 'Report', 'content' => 'ASM/activity_planning', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Report', 'content' => 'ASM/activity_planning', 'page_title' => 'Approve Activity Planning', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
 
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -428,9 +418,9 @@ class ASM extends MY_Controller {
                 $data['show'] = $this->User_model->getReporting2($id, $product, $current_month);
             }
 
-            $data = array('title' => 'Report', 'content' => 'ASM/reporting_rx', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Report', 'content' => 'ASM/reporting_rx', 'page_title' => 'Approve Rx/Vials Reporting', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
 
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -603,9 +593,9 @@ class ASM extends MY_Controller {
                 $data['Doctorlist'] = $this->User_model->generateActivityTable2($result, 'Reporting');
             }
 
-            $data = array('title' => 'Report', 'content' => 'ASM/reporting_activity', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
+            $data = array('title' => 'Report', 'content' => 'ASM/reporting_activity', 'page_title' => 'Approve Activity reporting', 'backUrl' => 'ASM/dashboard', 'view_data' => $data);
 
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -702,7 +692,7 @@ class ASM extends MY_Controller {
             }
             $data['detail'] = $this->User_model->All_data($this->VEEVA_Employee_ID);
             $data = array('title' => 'Profile Update', 'content' => 'ASM/Profile_Update', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -747,7 +737,7 @@ class ASM extends MY_Controller {
 
             $data['detail'] = $this->User_model->All_data($this->VEEVA_Employee_ID);
             $data = array('title' => 'Profile Update', 'content' => 'ASM/Profile_Update', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
-            $this->load->view('template2', $data);
+            $this->load->view('asmfront', $data);
         } else {
             $this->logout();
         }
@@ -756,15 +746,15 @@ class ASM extends MY_Controller {
     public function reporting_info() {
 
         $data['show'] = $this->asm_model->hospital_list($this->session->userdata('VEEVA_Employee_ID'));
-        $data = array('title' => 'Hospital List', 'content' => 'ASM/ActilyseReport', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
-        $this->load->view('template2', $data);
+        $data = array('title' => 'Hospital List', 'content' => 'ASM/ActilyseReport','page_title'=>'Hospital List', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
+        $this->load->view('asmfront', $data);
     }
 
     function data_show() {
         $id = $this->input->get('id');
         $data['list'] = $this->asm_model->data_report($id);
         $data = array('title' => 'Hospital List', 'content' => 'ASM/asm_reporting_tab', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
-        $this->load->view('template2', $data);
+        $this->load->view('asmfront', $data);
     }
 
     public function decryptPassword() {

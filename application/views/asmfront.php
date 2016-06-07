@@ -146,65 +146,45 @@
                             <input type="text" class="form-control" placeholder="Search">
                         </li>
                         <li>
-                            <a href="<?php echo site_url('User/dashboard'); ?>">
+                            <a href="<?php echo site_url('ASM/dashboard'); ?>">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="<?php echo site_url('User/Doctorlist'); ?>">
-                                <i class="fa fa-user"></i> <span>Customer</span> 
+                        <li>
+                            <a href="<?php echo site_url('ASM/ASM_update'); ?>">
+                                <i class="fa fa-user"></i>
+                                <span>Profile</span>
                             </a>
                         </li>
                         <li>
-                            <a href="<?php echo site_url('User/Doctorlist2'); ?>">
-                                <i class="fa fa-database"></i>
-                                <span>Profiling</span>
+                            <a href="<?php echo site_url('ASM/target'); ?>">
+                                <i class="fa fa-bullseye"></i> <span>Assign Target</span> 
                             </a>
                         </li>
 
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-line-chart"></i> <span>Planning</span> <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-line-chart"></i> <span>Approve Planning</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu treeview" style="display: none;">
-                                <li class=""><a href="<?php echo site_url('User/Planning'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
+                                <li class=""><a href="<?php echo site_url('ASM/asm_rx_planning'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
 
-                                <li class=""><a href="<?php echo site_url('User/Priority'); ?>"><i class="fa fa-circle-o"></i>  Priotize</a></li>
-
-                                <li class=""><a href="<?php echo site_url('User/ActivityPlanning'); ?>"><i class="fa fa-circle-o"></i>  Activity Planning</a></li>
+                                <li class=""><a href="<?php echo site_url('ASM/activity_planning'); ?>"><i class="fa fa-circle-o"></i>  Activity Planning</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-file-o"></i> <span>Reporting</span> <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-file-o"></i> <span>Approve Reporting</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu" style="display: none;">
 
-                                <li class=""><a href="<?php echo site_url('User/Reporting'); ?>"><i class="fa fa-circle-o"></i>  Rx Reporting</a></li>
+                                <li class=""><a href="<?php echo site_url('ASM/reporting_rx'); ?>"><i class="fa fa-circle-o"></i>  Rx Reporting</a></li>
 
-                                <li class=""><a href="<?php echo site_url('User/ActivityReporting'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
+                                <li class=""><a href="<?php echo site_url('ASM/reporting_activity'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-dashboard"></i> <span>Achievement</span> <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu" style="display: none;">
-
-                                <li class=""><a href="<?php echo site_url('User/monthlyTrend') . '?Zone=' . $this->Zone . '&Division=' . $this->Division . '&Territory=' . $this->Territory; ?>"><i class="fa fa-circle-o"></i>  Rx </a></li>
-
-                                <li class=""><a href="<?php //echo site_url('User/view_doctor');               ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
-                            </ul>
-                        </li>
-                        <?php if(strtolower($this->Division)=='thrombi'){ ?>
- <li>
-                            <a href="<?php echo site_url('User/Actilyse_dashboard'); ?>">
-                                <i class="fa fa-database"></i>
-                                <span>Actilyse Dashboard</span>
-                            </a>
-                        </li>
-                        <?php }?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
