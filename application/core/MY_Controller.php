@@ -93,4 +93,25 @@ class MY_Controller extends CI_Controller {
         redirect('User/index', 'refresh');
     }
 
+    ///Calculating Planning CutOffDates
+    function PlanCutOffDate() {
+        $current_day = date('d');
+        if ($current_day <= 3) {
+            $current_month = date('n', strtotime('-1 month'));
+            $created_at = date("Y-m-d", mktime(0, 0, 0, date("m"), 0, date("Y")));
+        } else {
+            $current_month = date('n');
+            $created_at = date('Y-m-d H:i:s');
+        }
+        return array($current_month, $created_at);
+    }
+
+    ///Setting CutOffDates
+    function setCutOffDate() {
+        $result = $this->PlanCutOffDate();
+        $this->nextMonth = $result[0];
+        $this->nextYear = date('Y', strtotime($result[1]));
+        return $result[1];
+    }
+
 }
