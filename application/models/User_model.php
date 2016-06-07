@@ -2482,4 +2482,37 @@ class User_model extends CI_Model {
         return array($current_month, $created_at);
     }
 
+    public function actilyse_data($id) {
+        $sql = "SELECT 
+                    dm.*,pf.Actilyse_id
+                     
+                  FROM
+                    `Employee_Doc` ed 
+                    INNER JOIN `Doctor_Master` dm 
+                      ON dm.`Account_ID` = ed.`VEEVA_Account_ID` AND dm.Individual_Type = 'hospital'
+                    LEFT JOIN Actilyse_data pf 
+                      ON pf.`VEEVA_Employee_ID` = '$id' 
+                      
+                      AND pf.`Doctor_Id` = dm.`Account_ID` 
+                     
+                  WHERE ed.`VEEVA_Employee_ID` = '$id'  AND `ed`.`Status`='1'  ";
+        $query = $this->db->query($sql);
+        return $query->result();
+    }
+          public  function actilyse_id($id){
+                $sql="Select * from Actilyse_data where Actilyse_id='$id'";
+                $query=$this->db->query($sql);
+                return $query->row();
+            }
+            public function insert_actilyse($data){
+                $this->db->insert('Actilyse_data',$data);
+               
+                  
+                
+            }
+            public function update_actilyse($data,$id){
+                $sql=$this->db->where('Actilyse_id',$id);
+                $sql=$this->db->update('Actilyse_data',$data);
+               
+            }
 }
