@@ -635,6 +635,7 @@ class User extends MY_Controller {
                         }
                     }
                 }
+                
                 if (!empty($messages)) {
                     $this->session->set_userdata('message', join(" ", array_unique($messages)));
                     $logdata = array(

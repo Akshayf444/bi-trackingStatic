@@ -420,7 +420,7 @@ class Report extends MY_Controller {
     }
 
     function dailyTrend() {
-        $perpage = 5000;
+        $perpage = 20;
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
         //$this->load->model('Master_Model');
         //$this->load->model('User_model');
@@ -476,7 +476,7 @@ class Report extends MY_Controller {
             $start_date = " BETWEEN '" . $this->input->get('Start_date') . "'  AND '" . $this->input->get('End_date') . " ' ";
 
             if ((int) $product > 0) {
-                $ProfileCount = $this->User_model->countDailyTrend($this->input->get('Start_date'), $this->input->get('End_date'), $product, $this->nextYear, $condition);
+                $ProfileCount = $this->User_model->countMonthlyTrend($product, $this->nextYear, $condition);
                 if (isset($ProfileCount->PlanningCount)) {
                     $data['total_pages'] = ceil($ProfileCount->PlanningCount / $perpage);
                     $offset = ($page - 1) * $perpage;
@@ -517,7 +517,7 @@ class Report extends MY_Controller {
 
     function monthlyTrend() {
         $offset = 0;
-        $perpage = 5000;
+        $perpage = 20;
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
         $result = $this->admin_model->find_zone();

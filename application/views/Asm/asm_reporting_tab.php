@@ -23,179 +23,171 @@
 if (!empty($list)) {
     $row = $list;
     $actilyse_data = $this->asm_model->find_actilyse_data($_GET['empid'], $this->input->post('id'));
-    ?>      
-<div class="panel-default">
-        <div class="panel-body">
-            <header><b><?php  echo $_GET['name'] ?></b></header>
-    </div>
-    </div>
-    <div class=" col-lg-12">         
-         <table class="table  table-bordered panel ">
+    ?>     
+    <div class="row">  
+        <div class=" col-lg-12">         
+            <table class="table  table-bordered panel ">
+                <tr>
+                    <th>Segment</th>
+                    <th>Focus</th>
+                    <th>Gain Project</th>
+                    <th>Zone</th>
+                    <th>ASM Name</th>
+                    <th>BDM Name</th>
+                    <th>MSL</th>
+                </tr>
+                <tr>  
+                    <td> <?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Segment;
+                        }
+                        ?></td>
+                    <td> <?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Focus;
+                        }
+                        ?></td>
+                    <td> <?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Gain_Project;
+                        }
+                        ?></td>
+                    <td><?php echo $row->Zone; ?></td>                    
+                    <td><?php echo $row->Reporting_To; ?></td>
+                    <td><?php echo $row->Full_Name; ?></td>
+
+                    <td><?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->MSL_Name;
+                        }
+                        ?></td>   
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="col-lg-12">
+            <table class="table  table-bordered panel ">
+                <tr>
+                    <th>Stroke Protocol</th>
+                    <th>Thrombolysing Unit </th>
+                    <th>No Of Beds</th>
+                    <th>In house   CT Scan facility</th>
+                    <th>In house MRI facility  </th>
+                    <th>Approach</th>
+
+                    <th>No of doctors in stroke team</th>
+
+                </tr>
+                <tr>
+                    <td><?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Stroke_Protocol
+                            ;
+                        }
+                        ?></td>
+                    <td>
+                        <?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Thrombolysing_Unit
+                            ;
+                        }
+                        ?></td>       
+                    <td><?php echo $row->No_Of_Beds; ?></td>
+                    <td><?php echo $row->CT_MRI_available; ?></td>
+                    <td><?php echo $row->CT_MRI_available; ?></td>
+
+                    <td><?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->Approach
+                            ;
+                        }
+                        ?></td> 
+                    <td><?php
+                        if (!empty($actilyse_data)) {
+                            echo $actilyse_data->No_of_doctors_in_stroke_team;
+                        }
+                        ?></td> 
+                </tr>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <table class="table  table-bordered panel ">
+                <thead>
                     <tr>
-                        <th>Segment</th>
-                        <th>Focus</th>
-                        <th>Gain Project</th>
-                        <th>Zone</th>
-                        <th>ASM Name</th>
-                        <th>BDM Name</th>
-                        <th>MSL</th>
-                    </tr>
-                    <tr>  
-                        <td> <?php
-                            if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Segment;
-                            }
-                            ?></td>
-                        <td> <?php
-                            if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Focus;
-                            }
-                            ?></td>
-                        <td> <?php
-                            if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Gain_Project;
-                            }
-                            ?></td>
-                        <td><?php echo $row->Zone; ?></td>                    
-                        <td><?php echo $row->Reporting_To; ?></td>
-                        <td><?php echo $row->Full_Name; ?></td>
-
-                        <td><?php
-                            if (!empty($actilyse_data)) {
-                                echo $actilyse_data->MSL_Name;
-                            }
-                            ?></td>   
-                    </tr>
-
-                </table>
-          
-    </div>
-    
-    
-            <div class="col-lg-12">
-               <table class="table  table-bordered panel ">
-                    <tr>
-                        <th>Stroke Protocol</th>
-                        <th>Thrombolysing Unit </th>
-                        <th>No Of Beds</th>
-                        <th>In house   CT Scan facility</th>
-                        <th>In house MRI facility  </th>
-                        <th>Approach</th>
-
-                        <th>No of doctors in stroke team</th>
-
-                    </tr>
-                    <tr>
-                        <td><?php
-                            if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Stroke_Protocol
-                                ;
-                            }
-                            ?></td>
-                        <td>
+                        <th>Stroke Champion Name</th>	<td>
                             <?php
                             if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Thrombolysing_Unit
-                                ;
+                                echo $actilyse_data->Stroke_Champion_Name;
                             }
-                            ?></td>       
-                        <td><?php echo $row->No_Of_Beds; ?></td>
-                        <td><?php echo $row->CT_MRI_available; ?></td>
-                        <td><?php echo $row->CT_MRI_available; ?></td>
-
-                        <td><?php
+                            ?></td>
+                    </tr><tr>
+                        <th>Spec of Stroke Champion	</th>
+                        <td> <?php
                             if (!empty($actilyse_data)) {
-                                echo $actilyse_data->Approach
-                                ;
+                                echo $actilyse_data->Spec_of_Stroke_Champion;
                             }
-                            ?></td> 
-                        <td><?php
+                            ?></td></tr>
+                    <tr>
+                        <th>Neurologist1</th>  <td><?php
                             if (!empty($actilyse_data)) {
-                                echo $actilyse_data->No_of_doctors_in_stroke_team;
+                                echo $actilyse_data->Neurologist1;
                             }
-                            ?></td> 
-                    </tr>
-                </table>
-            </div>
-            <div class="col-lg-6">
-               <table class="table  table-bordered panel ">
-                    <thead>
-                        <tr>
-                            <th>Stroke Champion Name</th>	<td>
-                                <?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Stroke_Champion_Name;
-                                }
-                                ?></td>
-                        </tr><tr>
-                            <th>Spec of Stroke Champion	</th>
-                            <td> <?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Spec_of_Stroke_Champion;
-                                }
-                                ?></td></tr>
-                        <tr>
-                            <th>Neurologist1</th>  <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Neurologist1;
-                                }
-                                ?></td> </tr>
-                        <tr>
-                            <th>Cardiologist 1</th>  <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Cardiologist1;
-                                }
-                                ?></td></tr>
-                        <tr> <th>Cardiologist 2</th> <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Cardiologist2;
-                                }
-                                ?> </td> </tr>
-                    </thead>
-                </table>
-                <?php
-                ?>
-            </div>
-            <div class="col-lg-6">
-                 <table class="table  table-bordered panel ">
-                    <thead>
-                        <tr>
-                            <th>Emergency Head </th>
-                            <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Emergency_Head;
-                                }
-                                ?></td></tr><tr>
-                            <th>Radiology Head </th>
-                            <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Radiology_Head;
-                                }
-                                ?></td></tr><tr>
-                            <th>Intensivist 1</th>
-                            <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Intensivist1;
-                                }
-                                ?> </td></tr><tr>
-                            <th>Intensivist 2</th>
-                            <td><?php
-                                if (!empty($actilyse_data)) {
-                                    echo $actilyse_data->Intensivist2;
-                                }
-                                ?> </td></tr><tr>	
-                            <th>AIS patients/Month</th>
-                            <td>   <?php echo $row->Patient_Seen_month; ?></td>
-                        </tr>
-
-                    </thead>
-                </table>
-
-            </div>
+                            ?></td> </tr>
+                    <tr>
+                        <th>Cardiologist 1</th>  <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Cardiologist1;
+                            }
+                            ?></td></tr>
+                    <tr> <th>Cardiologist 2</th> <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Cardiologist2;
+                            }
+                            ?> </td> </tr>
+                </thead>
+            </table>
+            <?php
+            ?>
         </div>
-    
-    <div class=" col-lg-12"> 
-    <table class="table  table-bordered panel ">
+        <div class="col-lg-6">
+            <table class="table  table-bordered panel ">
+                <thead>
+                    <tr>
+                        <th>Emergency Head </th>
+                        <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Emergency_Head;
+                            }
+                            ?></td></tr><tr>
+                        <th>Radiology Head </th>
+                        <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Radiology_Head;
+                            }
+                            ?></td></tr><tr>
+                        <th>Intensivist 1</th>
+                        <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Intensivist1;
+                            }
+                            ?> </td></tr><tr>
+                        <th>Intensivist 2</th>
+                        <td><?php
+                            if (!empty($actilyse_data)) {
+                                echo $actilyse_data->Intensivist2;
+                            }
+                            ?> </td></tr><tr>	
+                        <th>AIS patients/Month</th>
+                        <td>   <?php echo $row->Patient_Seen_month; ?></td>
+                    </tr>
+
+                </thead>
+            </table>
+
+        </div>
+        <div class=" col-lg-12"> 
+            <table class="table  table-bordered panel ">
                 <thead>
                     <tr>
                         <th>Month</th>
@@ -248,17 +240,18 @@ if (!empty($list)) {
                 </tbody>
             </table>
         </div>
-    
-    <div class=" col-lg-12"> 
-    <div class="panel panel-default">
-        <div class="panel-body ">
-            <div id="container" >
+        <div class=" col-lg-12"> 
+            <div class="panel panel-default">
+                <div class="panel-body ">
+                    <div id="container" >
 
+                    </div>
+                </div>
             </div>
+
         </div>
-    </div>
         <div class="col-lg-12">
-    <table class="table  table-bordered panel ">
+            <table class="table  table-bordered panel ">
                 <thead>
                     <tr>
                         <th>Month</th>
@@ -271,7 +264,7 @@ if (!empty($list)) {
                 for ($i = 1; $i <= 12; $i++) {
                     echo '<tr>';
                     echo '<th>' . date('M', mktime(0, 0, 0, $i, 1, date('Y'))) . '</th>';
-                    $activities = $this->asm_model->activity_reportmonth($i,$_GET['id'], $_GET['empid']);
+                    $activities = $this->asm_model->activity_reportmonth($i, $_GET['id'], $_GET['empid']);
                     if (!empty($activities)) {
 
                         echo '<td>' . $activities->Act_Plan . '</td>';
@@ -280,9 +273,9 @@ if (!empty($list)) {
                     }
                 }
                 ?>
-    </table>
+            </table>
+        </div>
     </div>
-
 <?php } ?>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>

@@ -753,7 +753,7 @@ class ASM extends MY_Controller {
     function data_show() {
         $id = $this->input->get('id');
         $data['list'] = $this->asm_model->data_report($id);
-        $data = array('title' => 'Hospital List', 'content' => 'ASM/asm_reporting_tab', 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
+        $data = array('title' => 'Hospital List', 'content' => 'ASM/asm_reporting_tab','page_title'=>$_GET['name'], 'view_data' => $data, 'backUrl' => 'ASM/dashboard');
         $this->load->view('asmfront', $data);
     }
 

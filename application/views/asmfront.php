@@ -185,6 +185,14 @@
                                 <li class=""><a href="<?php echo site_url('ASM/reporting_activity'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
                             </ul>
                         </li>
+                        <?php if (strtolower($this->Division) == 'thrombi') { ?>
+                                                    <li>
+                            <a href="<?php echo site_url('ASM/reporting_info'); ?>">
+                                <i class="fa fa-dashboard"></i> <span>Actilyse Dashboard</span> 
+                            </a>
+                        </li>
+                        <?php }?>
+
                     </ul>
                 </section>
                 <!-- /.sidebar -->

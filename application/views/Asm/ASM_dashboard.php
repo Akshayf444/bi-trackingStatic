@@ -1,26 +1,7 @@
 <script src="<?php echo asset_url() ?>js/knob.js" type="text/javascript"></script>
 <script src="<?php echo asset_url() ?>js/jquery.knob.js" type="text/javascript"></script>
 <link href="<?php echo asset_url() ?>css/style.css" rel="stylesheet" type="text/css"/>
-<style>
-    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-        border-top: 0px solid #dddddd;
-    }
-    audio, canvas, progress, video {
-        height: 90px;
-        margin-left: 208px;
-        margin-top: 2px;
-        margin-bottom: 30px;
-    }
-    audio,#kp1, progress, video {
-        height: 90px;
-        margin-left: 208px;
-        margin-top: -12px;
-        margin-bottom: -22px;
-    }
-    a{
-        font-weight: bold;
-    }
-</style>
+
 <!--
 <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
     <div class="panel panel-default ">
@@ -75,152 +56,149 @@
             ?>
         </ul>
     </div>
-    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="margin-top: 10px">
         <?php if (!empty($productlist)) { ?>
-            <div class="panel panel-default"> 
-                <div class="panel-heading"> Achievement Status  </div>
-                <div class="panel-body">
-                    <?php
-                    if (isset($_GET['Product_Id'])) {
-                        $object = new stdClass();
-                        $object->id = $this->input->get('Product_Id');
 
-                        $productlist = array($object);
-                    }
-                    ?>
-                    <div class="tab-content">
-                        <?php
-                        if (!empty($productlist)) {
-                            $count = 1;
-                            $ApproveCount = 0;
-                            $UnApproveCount = 0;
-                            $Pending = 0;
-                            $Submitted = 0;
-                            foreach ($productlist as $product) {
-                                if ($product->id == 1) {
-                                    $doctor = 'Hospital';
-                                    $rx = 'Vials';
-                                } else {
-                                    $doctor = 'Doctors';
-                                    $rx = 'Rx';
-                                }
-                                ?>
+            <?php
+            if (isset($_GET['Product_Id'])) {
+                $object = new stdClass();
+                $object->id = $this->input->get('Product_Id');
 
-                                <div id="<?php echo $product->id ?>11" class="tab-pane fade <?php echo isset($count) && $count == 1 ? 'in active' : ''; ?>">
+                $productlist = array($object);
+            }
+            ?>
+            <div class="tab-content">
+                <?php
+                if (!empty($productlist)) {
+                    $count = 1;
+                    $ApproveCount = 0;
+                    $UnApproveCount = 0;
+                    $Pending = 0;
+                    $Submitted = 0;
+                    foreach ($productlist as $product) {
+                        if ($product->id == 1) {
+                            $doctor = 'Hospital';
+                            $rx = 'Vials';
+                        } else {
+                            $doctor = 'Doctors';
+                            $rx = 'Rx';
+                        }
+                        ?>
 
-                                    <?php
-                                    $Status = $this->User_model->report($this->VEEVA_Employee_ID, $this->nextMonth, $this->nextYear, $product->id);
-                                    if (!empty($Status)) {
-                                        $nod = 0;
-                                        $profiled = 0;
-                                        $target = 0;
-                                        $planned = 0;
-                                        $actual = 0;
-                                        $dplanned = 0;
-                                        $actplaned = 0;
+                        <div id="<?php echo $product->id ?>11" class="tab-pane fade <?php echo isset($count) && $count == 1 ? 'in active' : ''; ?>">
+
+                            <?php
+                            $Status = $this->User_model->report($this->VEEVA_Employee_ID, $this->nextMonth, $this->nextYear, $product->id);
+                            if (!empty($Status)) {
+                                $nod = 0;
+                                $profiled = 0;
+                                $target = 0;
+                                $planned = 0;
+                                $actual = 0;
+                                $dplanned = 0;
+                                $actplaned = 0;
+                                $kpi1 = 0;
+                                $kpi2 = 0;
+                                $actualLastMonth = 0;
+                                $lastMonth = $this->User_model->calculateMonth($this->nextMonth, 1);
+                                $lastYear = $this->User_model->calculateYear($this->nextMonth, 1);
+
+                                foreach ($Status as $value) {
+                                    $LastMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $lastMonth, $lastYear);
+                                    $currentMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $this->nextMonth, $this->nextYear);
+                                    if ($value->Target_New_Rxn_for_the_month > 0) {
+                                        $kpi1 = ($currentMonthRx['Actual_Rx'] / $value->Target_New_Rxn_for_the_month) * 100;
+                                    } else {
                                         $kpi1 = 0;
-                                        $kpi2 = 0;
-                                        $actualLastMonth = 0;
-                                        $lastMonth = $this->User_model->calculateMonth($this->nextMonth, 1);
-                                        $lastYear = $this->User_model->calculateYear($this->nextMonth, 1);
-
-                                        foreach ($Status as $value) {
-                                            $LastMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $lastMonth, $lastYear);
-                                            $currentMonthRx = $this->User_model->product_detail($value->VEEVA_Employee_ID, $product->id, $this->nextMonth, $this->nextYear);
-                                            if ($value->Target_New_Rxn_for_the_month > 0) {
-                                                $kpi1 = ($currentMonthRx['Actual_Rx'] / $value->Target_New_Rxn_for_the_month) * 100;
-                                            } else {
-                                                $kpi1 = 0;
-                                            }
-                                            if ($value->No_of_Doctors_planned > 0) {
-                                                $kpi2 = ($value->checkk / $value->No_of_Doctors_planned) * 100;
-                                            } else {
-                                                $kpi2 = 0;
-                                            }
-
-                                            $dashboardDetails[$product->id][$value->VEEVA_Employee_ID] = array(
-                                                $value->Full_Name,
-                                                $value->No_of_Doctors,
-                                                $value->No_of_Doctors_profiled,
-                                                $value->Target_New_Rxn_for_the_month,
-                                                $value->Planned_New_Rxn,
-                                                $currentMonthRx['Actual_Rx'],
-                                                $value->No_of_Doctors_planned,
-                                                $value->checkk,
-                                                $LastMonthRx['Actual_Rx'],
-                                                $kpi1,
-                                                $kpi2
-                                            );
-                                            $profiled += $value->No_of_Doctors_profiled;
-                                            $target += $value->Target_New_Rxn_for_the_month;
-                                            $planned += $value->Planned_New_Rxn;
-                                            $nod += $value->No_of_Doctors;
-                                            $actplaned += $value->checkk;
-                                            $dplanned+= $value->No_of_Doctors_planned;
-                                            $actual += $currentMonthRx['Actual_Rx'];
-                                            $actualLastMonth += $LastMonthRx['Actual_Rx'];
-                                        }
-                                        $dashboardDetails[$product->id]['Total'] = array(
-                                            'Total', $nod, $profiled, $target, $planned, $actual, $dplanned, $actplaned, $actualLastMonth
-                                        );
                                     }
-                                    ?>
-                                    <div class="col-lg-5 col-md-5 col-xs-5">
-                                        <div class="demo"  >        
+                                    if ($value->No_of_Doctors_planned > 0) {
+                                        $kpi2 = ($value->checkk / $value->No_of_Doctors_planned) * 100;
+                                    } else {
+                                        $kpi2 = 0;
+                                    }
 
-                                            <input class="knob" id="kp3" readonly="" style="display: none" data-angleOffset=-125 data-angleArc=250 data-fgColor="#66EE66" value="<?php
-                                            if (isset($target) && $target > 0) {
-                                                echo ($actual / $target) * 100;
-                                            } else {
-                                                echo 0;
-                                            }
-                                            ?>">
-                                            <span style="margin-left: 116px;position: absolute;margin-top: -50px;"><?php
-                                                if (isset($target) && $target > 0) {
-                                                    echo ($actual / $target) * 100;
-                                                }
-                                                ?>%</span>
-                                            <span style="margin-left: 70px;position: absolute;margin-top: -35px"><?php echo $rx; ?> </span>
-                                            <span style="margin-left: 66px;position: absolute;margin-top: -17px;"> Actual / Target</span>
+                                    $dashboardDetails[$product->id][$value->VEEVA_Employee_ID] = array(
+                                        $value->Full_Name,
+                                        $value->No_of_Doctors,
+                                        $value->No_of_Doctors_profiled,
+                                        $value->Target_New_Rxn_for_the_month,
+                                        $value->Planned_New_Rxn,
+                                        $currentMonthRx['Actual_Rx'],
+                                        $value->No_of_Doctors_planned,
+                                        $value->checkk,
+                                        $LastMonthRx['Actual_Rx'],
+                                        $kpi1,
+                                        $kpi2
+                                    );
+                                    $profiled += $value->No_of_Doctors_profiled;
+                                    $target += $value->Target_New_Rxn_for_the_month;
+                                    $planned += $value->Planned_New_Rxn;
+                                    $nod += $value->No_of_Doctors;
+                                    $actplaned += $value->checkk;
+                                    $dplanned+= $value->No_of_Doctors_planned;
+                                    $actual += $currentMonthRx['Actual_Rx'];
+                                    $actualLastMonth += $LastMonthRx['Actual_Rx'];
+                                }
+                                $dashboardDetails[$product->id]['Total'] = array(
+                                    'Total', $nod, $profiled, $target, $planned, $actual, $dplanned, $actplaned, $actualLastMonth
+                                );
+                            }
+                            ?>
+                            <div class="row">
 
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-5 col-md-5 col-xs-5">
-                                        <div class="demo" >       
-
-                                            <input class="knob" id="kp4"  readonly=""style="display: none"  data-angleOffset=-125 data-angleArc=250 data-fgColor="#66EE66" value="<?php
-                                            if (isset($dplanned) && $dplanned > 0) {
-                                                echo ($actplaned / $dplanned) * 100;
-                                            } else {
-                                                echo 0;
-                                            }
-                                            ?>">
-                                            <span style="margin-left: 116px;position: absolute;margin-top: -50px;"><?php
-                                                if (isset($dplanned) && $dplanned > 0) {
-                                                    echo ($actplaned / $dplanned) * 100;
-                                                }
-                                                ?>%</span>
-
-                                            <span style="margin-left: 58px;position: absolute;margin-top: -35px"> <?php
-                                                echo $doctor;
-                                                ?> Engaged in Activity / Planned</span>
+                                <div class="col-lg-6 col-xs-12 col-md-6">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body ">
+                                            <div class="col-xs-8">
+                                                <h4>KPI 1 </h4><p>(Reported Rx / Target) </p> <label class="badge label-danger"><?php $kp1 = isset($target) && $target > 0 ? ($actual / $target) * 100 : 0; echo $actual ?> / <?php echo $target ?></label><label  class="badge">= <?php echo number_format($kp1,2)." %";?></label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <input type="text" readonly="readonly" style="display: none"  data-angleOffset=-125 data-angleArc=250 value="<?php echo $kp1; ?>" id="dial1">
+                                                <script>
+                                                    $("#dial1").knob({
+                                                        'change': function (v) {
+                                                            console.log(v);
+                                                        }
+                                                    });
+                                                </script>
+                                            </div>
 
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-6 col-xs-12 col-md-6">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body ">
+                                            <div class="col-xs-8">
+                                                <h4>KPI 2 </h4><p>(Doctor Engaged in Activity / Planned )</p> <label class="badge label-primary"><?php $kp2 = isset($dplanned) && $dplanned > 0 ? ($actplaned / $dplanned) * 100 : 0; echo $actplaned ?> / <?php echo $dplanned ?></label><label class="badge">= <?php echo number_format($kp2,2)." %";?></label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <input type="text" readonly="readonly" style="display: none"  data-angleOffset=-125 data-angleArc=250 value="<?php echo $kp2; ?>" id="dial2">
+                                                <script>
+                                                    $("#dial2").knob({
+                                                        'change': function (v) {
+                                                            console.log(v);
+                                                        }
+                                                    });
+                                                </script>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
 
 
-                                <?php
-                                $count ++;
-                                $kpi1 = 0;
-                                $kpi2 = 0;
-                            }
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>  
+                        <?php
+                        $count ++;
+                        $kpi1 = 0;
+                        $kpi2 = 0;
+                    }
+                }
+                ?>
+            </div>
 
         <?php } //var_dump($dashboardDetails);    ?>
 

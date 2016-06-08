@@ -1614,20 +1614,25 @@ class User_model extends CI_Model {
             $brandName = 'bm.Brand_Name';
             //$planProduct = "AND ar.Product_id = " . $product;
         }
-        $sql = "SELECT em.`Zone`,t.Territory,em.Full_Name,em.`VEEVA_Employee_ID`,dm.`Account_ID`,dm.`Account_Name`,
+        $sql = "SELECT e.`Zone`,t.Territory,e.Full_Name,e.`VEEVA_Employee_ID`,dm.`Account_ID`,dm.`Account_Name`,
                 " . $brandName . ",
                 COUNT(ap.`Act_Plan`) AS No_of_Doctors_planned,
                 COUNT(CASE WHEN ar.`Activity_Done`='Yes' THEN 1 END) AS checkk,
                 rp.Planned_Rx,
                 rx.Jan,rx.Feb,rx.Mar,rx.Apr,rx.May,rx.Jun,rx.Jul,rx.Aug,rx.Sep,rx.Octo,rx.Nov,rx.Decb
-                FROM
+                FROM ( SELECT * FROM Employee_Master as em  ";
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . join(" AND ", $conditions);
+        }
+        $sql.=" LIMIT {$limit} OFFSET {$offset} ) as e
+                INNER JOIN 
                 ( SELECT 
                   `Doctor_Id`,`VEEVA_Employee_ID`,SUM(`Planned_Rx`) AS Planned_Rx,Product_id  
                 FROM
-                  `Rx_Planning` WHERE YEAR = '$year' " . $rpProduct . " GROUP BY `Doctor_Id`,VEEVA_Employee_ID ORDER BY VEEVA_Employee_ID LIMIT {$limit} OFFSET {$offset}
-               ) AS rp 
+                  `Rx_Planning` WHERE YEAR = '$year' " . $rpProduct . " GROUP BY `Doctor_Id`,VEEVA_Employee_ID ORDER BY VEEVA_Employee_ID 
+               ) AS rp ON rp.VEEVA_Employee_ID = e.VEEVA_Employee_ID
                 INNER JOIN `Doctor_Master` dm ON dm.`Account_ID` = rp.`Doctor_Id`
-                INNER JOIN `Employee_Master` em ON rp.`VEEVA_Employee_ID` = em.`VEEVA_Employee_ID`
+               
                 LEFT JOIN (
                      SELECT `Doctor_Id`,`VEEVA_Employee_ID`,
                      SUM(CASE WHEN `month` = 01 THEN Actual_Rx ELSE 0 END) AS Jan,
@@ -1646,17 +1651,14 @@ class User_model extends CI_Model {
 
                 )  AS rx ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` AND rp.`Doctor_Id` = rx.`Doctor_Id`    
                    LEFT JOIN `Territory_master` t
-                   ON t.`id` = em.`Territory`
+                   ON t.`id` = e.`Territory`
                    LEFT JOIN Activity_Planning ap
-                   ON dm.`Account_ID`=ap.`Doctor_Id`  AND ap.`Year`='$year' " . $apProduct . " AND em.`VEEVA_Employee_ID` = ap.`VEEVA_Employee_ID` 
+                   ON dm.`Account_ID`=ap.`Doctor_Id`  AND ap.`Year`='$year' " . $apProduct . " AND e.`VEEVA_Employee_ID` = ap.`VEEVA_Employee_ID` 
                    LEFT JOIN Activity_Reporting ar
-                   ON dm.`Account_ID`=ar.`Doctor_Id`  AND ar.`Year`='$year' " . $arProduct . " AND em.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID`
+                   ON dm.`Account_ID`=ar.`Doctor_Id`  AND ar.`Year`='$year' " . $arProduct . " AND e.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID`
                    LEFT JOIN Brand_Master bm ON bm.id = rp.Product_id            ";
-        if (!empty($conditions)) {
-            $sql .= " WHERE " . join(" AND ", $conditions);
-        }
 
-        $sql.=" GROUP BY rp.`Doctor_Id`,rp.`VEEVA_Employee_ID` ORDER BY em.VEEVA_Employee_ID ";
+        $sql.=" GROUP BY rp.`Doctor_Id`,rp.`VEEVA_Employee_ID` ORDER BY e.VEEVA_Employee_ID ";
         $query = $this->db->query($sql);
         //echo $sql;
         return $query->result();
@@ -1993,16 +1995,19 @@ class User_model extends CI_Model {
         if (!empty($date_array)) {
             $sql .= join(",", $date_array);
         }
-        $sql.=" FROM
+        $sql.=" FROM ( SELECT * FROM Employee_Master as em  ";
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . join(" AND ", $conditions);
+        }
+        $sql.=" LIMIT {$limit} OFFSET {$offset} ) as e
+                INNER JOIN
                     (SELECT 
                       * 
                     FROM
                       Rx_Planning 
                     WHERE YEAR = '$year' 
-                       " . $rpProduct . "  AND DATE_FORMAT(created_at, '%Y-%m-%d') " . $date . "  ORDER BY VEEVA_Employee_ID LIMIT {$limit} OFFSET {$offset}  ) AS rp 
-                    INNER JOIN(
-                        SELECT `Full_Name`,`VEEVA_Employee_ID`,`Zone`,Territory,Division FROM `Employee_Master` WHERE `Profile` = 'BDM'
-                    )  AS em ON em.`VEEVA_Employee_ID` = rp.`VEEVA_Employee_ID` 
+                       " . $rpProduct . "  AND DATE_FORMAT(created_at, '%Y-%m-%d') " . $date . "  ORDER BY VEEVA_Employee_ID LIMIT {$limit} OFFSET {$offset}  ) AS rp ON e.VEEVA_Employee_ID = rp.VEEVA_Employee_ID
+                  
                     LEFT JOIN Territory_master t 
                       ON t.id = em.Territory 
                     INNER JOIN Doctor_Master dm 
@@ -2029,10 +2034,6 @@ class User_model extends CI_Model {
         }
         $sql .="Doctor_Id,VEEVA_Employee_ID from Rx_Actual  WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN '$start_date' and '$end_date' " . $rxProduct . "   GROUP BY Doctor_Id,VEEVA_Employee_ID ";
         $sql .= "   ) AS rx ON rx.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND rx.Doctor_Id = rp.Doctor_Id ";
-        if (!empty($conditions)) {
-            $sql .=" WHERE " . join(" AND ", $conditions);
-        }
-
         $sql .=" GROUP BY dm.`Account_ID` ORDER BY em.VEEVA_Employee_ID";
         $query = $this->db->query($sql);
         //echo $sql;
@@ -2223,12 +2224,8 @@ class User_model extends CI_Model {
     }
 
     function countMonthlyTrend($Product_Id, $Year, $condition = array()) {
-        $sql = "SELECT 
-                  count(rp.Rxplan_id) AS PlanningCount
-                FROM
-                  `Rx_Planning` rp INNER JOIN Employee_Master em ON em.VEEVA_Employee_ID = rp.VEEVA_Employee_ID
-                  
-        WHERE YEAR = '$Year' AND Product_Id = " . $Product_Id . "  ";
+        $sql = "SELECT COUNT(*) as PlanningCount FROM Employee_Master em                   
+        WHERE em.Profile = 'BDM' ";
         if (!empty($condition)) {
             foreach ($condition as $value) {
                 $sql .= " AND " . $value;
