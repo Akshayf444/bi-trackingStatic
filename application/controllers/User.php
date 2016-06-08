@@ -1535,7 +1535,7 @@ EMAILBODY;
     public function Actilyse_dashboard() {
         if ($this->is_logged_in('BDM')) {
             $data['show'] = $this->User_model->actilyse_data($this->VEEVA_Employee_ID);
-            $data = array('title' => 'Actilyse Dashboard', 'content' => 'User/actilyse_dashboard', 'view_data' => $data);
+            $data = array('title' => 'Actilyse Dashboard', 'page_title'=>'Actilyse Dashboard', 'content' => 'User/actilyse_dashboard', 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
