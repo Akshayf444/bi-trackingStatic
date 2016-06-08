@@ -254,6 +254,7 @@ echo form_open('User/Planning?Product_Id=' . $this->Product_Id, $attributes);
         });
 
         var oTable = $('#datatable').dataTable({
+            "destroy":true,
             "bPaginate": false,
             "bInfo": false,
             "info": false,
@@ -264,6 +265,7 @@ echo form_open('User/Planning?Product_Id=' . $this->Product_Id, $attributes);
                 }
             ]
         });
+        
         $('#TableSort').on('change', function () {
             var selectedValue = $(this).val();
             oTable.fnSort([[selectedValue, 'desc']]); //Exact value, column, reg

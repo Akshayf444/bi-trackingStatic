@@ -1976,10 +1976,10 @@ class User_model extends CI_Model {
         }
         $Individual_Type = $product == 1 ? 'Hospital' : 'Doctor';
         $sql = "SELECT 
-                    em.Zone,
+                    e.Zone,
                     t.Territory,
-                    em.`Full_Name`,
-                    em.VEEVA_Employee_ID,  
+                    e.`Full_Name`,
+                    e.VEEVA_Employee_ID,  
                    
                     dm.Account_ID,
                     dm.Account_Name,
@@ -2006,10 +2006,10 @@ class User_model extends CI_Model {
                     FROM
                       Rx_Planning 
                     WHERE YEAR = '$year' 
-                       " . $rpProduct . "  AND DATE_FORMAT(created_at, '%Y-%m-%d') " . $date . "  ORDER BY VEEVA_Employee_ID LIMIT {$limit} OFFSET {$offset}  ) AS rp ON e.VEEVA_Employee_ID = rp.VEEVA_Employee_ID
+                       " . $rpProduct . "  AND DATE_FORMAT(created_at, '%Y-%m-%d') " . $date . "  ORDER BY VEEVA_Employee_ID  ) AS rp ON e.VEEVA_Employee_ID = rp.VEEVA_Employee_ID
                   
                     LEFT JOIN Territory_master t 
-                      ON t.id = em.Territory 
+                      ON t.id = e.Territory 
                     INNER JOIN Doctor_Master dm 
                       ON dm.`Account_ID` = rp.`Doctor_id` 
                       AND dm.Individual_Type = '$Individual_Type' 
@@ -2017,14 +2017,14 @@ class User_model extends CI_Model {
                       ON rp.`Doctor_Id` = ap.`Doctor_Id` 
                       AND ap.`Year` = '$year' 
                       AND DATE_FORMAT(ap.created_at, '%Y-%m-%d') " . $date . "
-                      AND ap.`VEEVA_Employee_ID` = rp.`VEEVA_Employee_ID` 
+                      AND ap.`VEEVA_Employee_ID` = e.`VEEVA_Employee_ID` 
                       " . $apProduct . "
                     LEFT JOIN Activity_Reporting ar 
                       ON rp.`Doctor_Id` = ar.`Doctor_Id` 
                       " . $arProduct . "
                       AND ar.`Year` = '$year' 
                       AND DATE_FORMAT(ar.created_at, '%Y-%m-%d')  " . $date . "
-                      AND rp.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID`
+                      AND e.`VEEVA_Employee_ID` = ar.`VEEVA_Employee_ID`
                     LEFT JOIN Brand_Master bm ON rp.Product_id = bm.id
                     LEFT JOIN (
                         SELECT ";
@@ -2033,8 +2033,8 @@ class User_model extends CI_Model {
             $start_date1 = date("Y-m-d", strtotime("+1 day", strtotime($start_date1)));
         }
         $sql .="Doctor_Id,VEEVA_Employee_ID from Rx_Actual  WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN '$start_date' and '$end_date' " . $rxProduct . "   GROUP BY Doctor_Id,VEEVA_Employee_ID ";
-        $sql .= "   ) AS rx ON rx.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND rx.Doctor_Id = rp.Doctor_Id ";
-        $sql .=" GROUP BY dm.`Account_ID` ORDER BY em.VEEVA_Employee_ID";
+        $sql .= "   ) AS rx ON rx.VEEVA_Employee_ID = e.VEEVA_Employee_ID AND rx.Doctor_Id = rp.Doctor_Id ";
+        $sql .=" GROUP BY dm.`Account_ID` ORDER BY e.VEEVA_Employee_ID";
         $query = $this->db->query($sql);
         //echo $sql;
         return $query->result();

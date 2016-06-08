@@ -1,5 +1,5 @@
-<link href="http://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="Stylesheet" type="text/css">
-<script src="<?php echo asset_url(); ?>js/jquery.dataTables.min.js" type="text/javascript"></script>
+<!--<link href="http://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="Stylesheet" type="text/css">
+<script src="<?php //echo asset_url(); ?>js/jquery.dataTables.min.js" type="text/javascript"></script>-->
 <?php $this->load->view('User/ProductList', array('site_url' => 'User/Priority')); ?>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -24,7 +24,8 @@
 
 <!--    <div class="panel panel-default">
         <div class="panel-heading">Set Priority</div>-->
-<?php echo isset($doctorList) ?
+<?php
+echo isset($doctorList) ?
         '<div class="row">
             <div class="col-lg-12 col-md-12 ">' . $doctorList . '</div></div>
             <div class="row">
@@ -43,41 +44,42 @@
     table.dataTable tbody tr {
         background-color: transparent;
     }
-    
+
     .row{
         margin-bottom: 10px;
     }
 </style>
 <script>
-    var oTable = $('#datatable').dataTable({
-        "bPaginate": false,
-        "bInfo": false,
-        "info": false,
-        "columnDefs": [
-            {
-                "targets": [7],
-                "visible": false
-            }
-        ]
+    $('document').ready(function () {
+        var oTable = $('#datatable').dataTable({
+            "destroy": true,
+            "bPaginate": false,
+            "bInfo": false,
+            "info": false,
+            "columnDefs": [
+                {
+                    "targets": [7],
+                    "visible": false
+                }
+            ]
+        });
     });
+
+
     $('#TableSort').on('change', function () {
         var selectedValue = $(this).val();
         oTable.fnSort([[selectedValue, 'desc']]); //Exact value, column, reg
     });
-
     oTable.fnSort([[7, 'desc']]); //Exact value, column, reg
 
     $("#Submit").click(function () {
         $("#Status").val('Submitted');
-
     });
-
     function deleteEmp(url) {
         var r = confirm("Are you sure you want to delete");
         if (r == true)
         {
             window.location = url;
-
         }
         else
         {
