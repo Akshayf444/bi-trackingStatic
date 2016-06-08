@@ -251,9 +251,9 @@ class User extends MY_Controller {
 
     public function Profiling() {
         $Doctor_Id = '0';
-        
+
         $this->setProductId();
-        
+
         if ($this->input->get('Doctor_Id')) {
             $Doctor_Id = $this->input->get('Doctor_Id');
         }
@@ -1384,7 +1384,8 @@ EMAILBODY;
         $this->db->query($sql);
     }
 
-    /* ~~~~~~  END OF SCHEDULERS ~~~~~~*/
+    /* ~~~~~~  END OF SCHEDULERS ~~~~~~ */
+
     public function Doctorlist() {
         
         $data = array('title' => 'Customer List', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
@@ -1528,6 +1529,65 @@ EMAILBODY;
             }
         } else {
             redirect('User/dashboard', 'refresh');
+        }
+    }
+
+    public function Actilyse_dashboard() {
+        if ($this->is_logged_in('BDM')) {
+            $data['show'] = $this->User_model->actilyse_data($this->VEEVA_Employee_ID);
+            $data = array('title' => 'Actilyse Dashboard', 'content' => 'User/actilyse_dashboard', 'view_data' => $data);
+            $this->load->view('bdmfront', $data);
+        } else {
+            $this->logout();
+        }
+    }
+
+    public function Actilyse() {
+        if ($this->is_logged_in('BDM')) {
+            $data['show'] = $this->User_model->actilyse_id($this->input->get('Actilyse_id'));
+
+            if ($this->input->post()) {
+                $data = array('Multi_Super_speciality' => $this->input->post('Multi_Super_speciality'),
+                    'No_of_Beds' => $this->input->post('No_of_Beds'),
+                    'No_of_Emergency_Beds' => $this->input->post('No_of_Emergency_Beds'),
+                    'CT_Scan' => $this->input->post('CT_Scan'),
+                    'MRI_Facility' => $this->input->post('MRI_Facility'),
+                    'CT_Scan24' => $this->input->post('CT_Scan24'),
+                    'Focus' => $this->input->post('Focus'),
+                    'Location' => $this->input->post('Location'),
+                    'Segment' => $this->input->post('Segment'),
+                    'MSL_Name' => $this->input->post('MSL_Name'),
+                    'Gain_Project' => $this->input->post('Gain_Project'),
+                    'Stroke_Champion_Name' => $this->input->post('Stroke_Champion_Name'),
+                    'Spec_of_Stroke_Champion' => $this->input->post('Spec_of_Stroke_Champion'),
+                    'Neurologist1' => $this->input->post('Neurologist1'),
+                    'Cardiologist1' => $this->input->post('Cardiologist1'),
+                    'Cardiologist2' => $this->input->post('Cardiologist2'),
+                    'Emergency_Head' => $this->input->post('Emergency_Head'),
+                    'Radiology_Head' => $this->input->post('Radiology_Head'),
+                    'Intensivist1' => $this->input->post('Intensivist1'),
+                    'Intensivist2' => $this->input->post('Intensivist2'),
+                    'AISpatients_Month' => $this->input->post('AISpatients_Month'),
+                    'Ambulance_service' => $this->input->post('Ambulance_service'),
+                    'Stroke_Protocol' => $this->input->post('Stroke_Protocol'),
+                    'Thrombolysing_Unit' => $this->input->post('Thrombolysing_Unit'),
+                    'No_of_doctors_in_stroke_team' => $this->input->post('No_of_doctors_in_stroke_team'),
+                    'Approach' => $this->input->post('Approach'),
+                    'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID,
+                    'Doctor_id'=>$this->input->post('Doctor_id')
+                 
+                );
+                
+                if ($this->input->post('Actilyse_id') == '' || $this->input->post('Actilyse_id') == NULL) {
+                    $this->User_model->insert_actilyse($data);
+                    redirect('User/Actilyse_dashboard', 'refresh');
+                } else {
+                    $this->User_model->update_actilyse($data, $this->input->post('Actilyse_id'));
+                    redirect('User/Actilyse_dashboard', 'refresh');
+                }
+            }
+            $data = array('title' => 'Actilyse Data', 'content' => 'User/actilyse', 'view_data' => $data, 'page_title' => 'Actilyse List',);
+            $this->load->view('bdmfront', $data);
         }
     }
 

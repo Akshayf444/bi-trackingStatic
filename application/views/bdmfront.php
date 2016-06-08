@@ -197,7 +197,14 @@
                                 <li class=""><a href="<?php //echo site_url('User/view_doctor');               ?>"><i class="fa fa-circle-o"></i>  Activity </a></li>
                             </ul>
                         </li>
-
+                        <?php if(strtolower($this->Division)=='thrombi'){ ?>
+ <li>
+                            <a href="<?php echo site_url('User/Actilyse_dashboard'); ?>">
+                                <i class="fa fa-database"></i>
+                                <span>Actilyse Dashboard</span>
+                            </a>
+                        </li>
+                        <?php }?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
