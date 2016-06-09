@@ -229,7 +229,11 @@ class Admin extends MY_Controller {
                     }
                     $terr = '';
                     $territory = $this->User_model->getTerritory2(array("t.Territory = '" . $row['6'] . "'"));
-
+                    
+                    ///Escaping the characters
+                    for ($index = 0; $index < 25; $index++) {
+                        $row[$index] = mysql_real_escape_string($row[$index]);
+                    }
 
                     if (!empty($territory)) {
                         $territory = array_shift($territory);
@@ -710,14 +714,16 @@ class Admin extends MY_Controller {
                         }
                     }
                     $count++;
+                    
+                    ///Escaping the characters
+                    for ($index = 0; $index < 18; $index++) {
+                        $row[$index] = mysql_real_escape_string($row[$index]);
+                    }
 
                     if ($count == 1) {
                         continue;
                     }
 
-                    //$check = $this->admin_model->doc_duplicate($row['0']);
-                    //var_dump($check);
-                    //if (empty($check)) {
                     $data = array(
                         'Account_ID' => $row['0'],
                         'Salutation' => $row['1'],
@@ -751,7 +757,7 @@ class Admin extends MY_Controller {
             }
 
             $sql.=join(",", $values);
-            $sql.=" ON Duplicate KEY UPDATE Account_Name = VALUES(Account_Name),State = VALUES(State),Pin_Code = VALUES(Pin_Code)";
+            $sql.=" ON Duplicate KEY UPDATE Account_Name = VALUES(Account_Name),State = VALUES(State),Pin_Code = VALUES(Pin_Code),Individual_Type = VALUES(Individual_Type)";
             $this->db->query($sql);
 
             if ($properFormat == FALSE) {
@@ -891,6 +897,11 @@ class Admin extends MY_Controller {
                         }
                     }
                     $count++;
+                    
+                    ///Escaping the characters
+                    for ($index = 0; $index < 7; $index++) {
+                        $row[$index] = mysql_real_escape_string($row[$index]);
+                    }
 
                     if ($count == 1) {
                         continue;

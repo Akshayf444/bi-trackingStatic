@@ -91,7 +91,7 @@ if (isset($_GET['Product']) && $_GET['Product'] == 1) {
     </table>
 </div>
 <div class="col-lg-12 outer_container" style="overflow: scroll; overflow-y: hidden; width:100%;">
-    <table class="table table-bordered panel">
+    <table class="table table-bordered panel" id="exporttable">
         <tr>
             <th>Zone</th>
             <th>Territory</th>

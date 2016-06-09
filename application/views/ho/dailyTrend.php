@@ -27,7 +27,7 @@
             <input name="Start_date" required="required" autocomplete="off" placeholder="Start Date" value="<?php echo isset($_GET['Start_date']) ? $_GET['Start_date'] : ''; ?>" class="datepicker">
             <input name="End_date" required="required" autocomplete="off" placeholder="End Date" value="<?php echo isset($_GET['End_date']) ? $_GET['End_date'] : ''; ?>" class="datepicker" >
             <input type="submit" value="Fetch" class="btn btn-primary btn-xs">
-            <input type="submit" name="Export" value="Export" class="btn btn-success btn-xs" >
+            <a download="dailyTrend<?php echo date('Ymd H-i-s'); ?>.csv" href="#" onclick="return ExcellentExport.csv(this, 'export');"  class="btn btn-success btn-xs" >Export</a>
         </div>
     </div>
     <div class="panel panel-default">
@@ -57,6 +57,7 @@ if (isset($_GET['Product']) && $_GET['Product'] == 1) {
     $rx = 'Rx/Vials';
 }
 ?>
+
 <style>
     #fixeddiv {
         position: fixed;
@@ -78,7 +79,7 @@ if (isset($_GET['Product']) && $_GET['Product'] == 1) {
 <button id="fixeddiv" ><i class="fa fa-arrow-right"></i></button>
 <button id="fixeddiv2" ><i class="fa fa-arrow-left"></i></button>
 <div class="col-lg-12 outer_container" style="overflow: scroll; overflow-y: hidden; width:100%;">
-    <table class="table table-bordered panel">
+    <table class="table table-bordered panel" id="export">
         <tr>
             <th id="zone">Zone</th>
             <th>Territory</th>
@@ -151,12 +152,12 @@ if (isset($_GET['Product']) && $_GET['Product'] == 1) {
 <script src="<?php echo asset_url(); ?>js/datepicker.js" type="text/javascript"></script>
 <script src="<?php echo asset_url(); ?>js/DivisionScroll.js" type="text/javascript"></script>
 <script>
-    $('document').ready(function () {
-        var emp = 0;
-        var doctor = 0;
-        var planned = 0;
-        var completed = 0;
-        var plannedrx = 0;
+                $('document').ready(function () {
+                    var emp = 0;
+                    var doctor = 0;
+                    var planned = 0;
+                    var completed = 0;
+                    var plannedrx = 0;
 <?php
 $start_date1 = $_GET['Start_date'];
 while (strtotime($start_date1) <= strtotime($end_date)) {
@@ -164,21 +165,21 @@ while (strtotime($start_date1) <= strtotime($end_date)) {
     $start_date1 = date("Y-m-d", strtotime("+1 day", strtotime($start_date1)));
 }
 ?>
-        $(".emp").each(function () {
-            emp = emp + 1;
-        });
-        $(".doctor").each(function () {
-            doctor = doctor + 1;
-        });
-        $(".planned").each(function () {
-            planned = planned + parseFloat($(this).html()) || 0;
-        });
-        $(".completed").each(function () {
-            completed = completed + parseFloat($(this).html()) || 0;
-        });
-        $(".plannedrx").each(function () {
-            plannedrx = plannedrx + parseFloat($(this).html()) || 0;
-        });
+                    $(".emp").each(function () {
+                        emp = emp + 1;
+                    });
+                    $(".doctor").each(function () {
+                        doctor = doctor + 1;
+                    });
+                    $(".planned").each(function () {
+                        planned = planned + parseFloat($(this).html()) || 0;
+                    });
+                    $(".completed").each(function () {
+                        completed = completed + parseFloat($(this).html()) || 0;
+                    });
+                    $(".plannedrx").each(function () {
+                        plannedrx = plannedrx + parseFloat($(this).html()) || 0;
+                    });
 
 <?php
 $start_date1 = $_GET['Start_date'];
@@ -190,12 +191,12 @@ while (strtotime($start_date1) <= strtotime($end_date)) {
     $start_date1 = date("Y-m-d", strtotime("+1 day", strtotime($start_date1)));
 }
 ?>
-        $(".doctorcount").html(doctor);
-        $(".plancount").html(planned);
-        $(".completedcount").html(completed);
-        $(".plannedrxcount").html(plannedrx);
+                    $(".doctorcount").html(doctor);
+                    $(".plancount").html(planned);
+                    $(".completedcount").html(completed);
+                    $(".plannedrxcount").html(plannedrx);
 
-    });
+                });
 </script>
 <script type="text/javascript">
     $('select[name="Zone"]').change(function () {
