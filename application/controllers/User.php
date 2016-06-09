@@ -1585,7 +1585,8 @@ EMAILBODY;
                     redirect('User/Actilyse_dashboard', 'refresh');
                 }
             }
-            $data = array('title' => 'Actilyse Data', 'content' => 'User/actilyse', 'view_data' => $data, 'page_title' => 'Actilyse List',);
+           $name=$this->input->get('Hospital');
+            $data = array('title' => 'Actilyse Data', 'content' => 'User/actilyse', 'view_data' => $data, 'page_title' => $name,);
             $this->load->view('bdmfront', $data);
         }
     }

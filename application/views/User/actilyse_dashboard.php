@@ -24,7 +24,7 @@
                 
                
                 echo is_null($value->Actilyse_id) ? 
-               '<a href="' . site_url('User/Actilyse?Actilyse_id=' . $value->Actilyse_id   . '&Doctor_Id=' . $value->Account_ID) . '" class="btn btn-danger btn-xs">Add Detail</a>' : '<a href="' . site_url('User/Actilyse?Actilyse_id=' . $value->Actilyse_id  . '&Doctor_Id=' . $value->Account_ID) . '" class="btn btn-success btn-xs">Edit Detail</a>';
+               '<a href="' . site_url('User/Actilyse?Actilyse_id=' . $value->Actilyse_id   . '&Doctor_Id=' . $value->Account_ID. '&Hospital=' . $value->Account_Name) . '" class="btn btn-danger btn-xs">Add Detail</a>' : '<a href="' . site_url('User/Actilyse?Actilyse_id=' . $value->Actilyse_id  . '&Doctor_Id=' . $value->Account_ID. '&Hospital=' . $value->Account_Name) . '" class="btn btn-success btn-xs">Edit Detail</a>';
                 echo '</td></tr>';
             }
             ?>
