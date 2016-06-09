@@ -137,6 +137,10 @@
                     </div>
                 </nav>
             </header>
+            <?php
+            $Zone = isset($CI->Zone) && $CI->Zone != '' ? 'Zone=' . $CI->Zone : '';
+            $Division = isset($CI->Division) && $CI->Division != '' && $CI->Division != 'Both' ? '&Division=' . $CI->Division : '';
+            ?>
             <aside class="main-sidebar">
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
@@ -151,7 +155,7 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li>
+
                         <li>
                             <a href="<?php echo site_url('ASM/ASM_update'); ?>">
                                 <i class="fa fa-user"></i>
@@ -186,12 +190,64 @@
                             </ul>
                         </li>
                         <?php if (strtolower($this->Division) == 'thrombi') { ?>
-                                                    <li>
-                            <a href="<?php echo site_url('ASM/reporting_info'); ?>">
-                                <i class="fa fa-dashboard"></i> <span>Actilyse Dashboard</span> 
+                            <li>
+                                <a href="<?php echo site_url('ASM/reporting_info'); ?>">
+                                    <i class="fa fa-dashboard"></i> <span>Actilyse Dashboard</span> 
+                                </a>
+                            </li>
+                        <?php } ?>
+
+                        <li>
+                            <a href="<?php echo site_url('Report/dailyTrend?' . $Zone . $Division); ?>">
+                                <i class="fa fa-file-text"></i>
+                                <span>Daily Trend</span>
                             </a>
                         </li>
-                        <?php }?>
+                        <li>
+                            <a href="<?php echo site_url('Report/monthlyTrend?' . $Zone . $Division); ?>">
+                                <i class="fa fa-file-text"></i>
+                                <span>Monthly Trend</span>
+                            </a>
+                        </li>
+                        <?php
+                        if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'diabetes' || strtolower($CI->Division) == 'both') {
+
+                            if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'both') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo site_url('Report/thrombiTrend?' . $Zone); ?>">
+                                        <i class="fa fa-file-text"></i>
+                                        <span>Thrombi Report</span>
+                                    </a>
+                                </li>                                 
+                                <?php
+                            }
+                            if (isset($CI->Division) && strtolower($CI->Division) == 'diabetes' || strtolower($CI->Division) == 'both') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo site_url('Report/diabetesTrend?' . $Zone); ?>">
+                                        <i class="fa fa-file-text"></i>
+                                        <span>Diabetes Report</span>
+                                    </a>
+                                </li>
+                                <?php
+                            }
+                            ?>
+                        <?php }
+                        ?>
+                        <li>
+                            <a href="<?php echo site_url('Report/ActivityTrend?' . $Zone . $Division); ?>">
+                                <i class="fa fa-file-text"></i>
+                                <span>Activity Trend</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo site_url('Report/SystemStatus?' . $Zone . $Division); ?>">
+                                <i class="fa fa-dashboard"></i>
+                                <span>Status Report</span>
+                            </a>
+                        </li>
+
 
                     </ul>
                 </section>

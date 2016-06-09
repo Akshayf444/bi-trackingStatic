@@ -470,6 +470,13 @@ class Report extends MY_Controller {
             array_push($this->Errors, 'Please Select Product');
         }
 
+        
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($TerritoryConditions, $reporting);
+            array_push($condition, $reporting);
+        }
 
         ///Fetch Daily trend Data
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date') != '') {
@@ -531,7 +538,6 @@ class Report extends MY_Controller {
         $productlist = $this->admin_model->show_pro_list();
         $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
 
-
         array_push($TerritoryConditions, "em.Profile = 'BDM' ");
 
         $condition = array();
@@ -554,6 +560,14 @@ class Report extends MY_Controller {
             $condition[3] = "em.Territory = '" . $this->input->get('Territory') . "'";
         }
 
+        
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($TerritoryConditions, $reporting);
+            array_push($condition, $reporting);
+        }
+        
         ///Fetch Monthly Trend Data
         if ($this->input->get('Product') != '' && $this->input->get('Product') != 'All') {
             $product = $this->input->get('Product');
@@ -603,6 +617,7 @@ class Report extends MY_Controller {
     function diabetesTrend() {
         //$this->load->model('Master_Model');
         //$this->load->model('User_model');
+        $TerritoryConditions = array();
         $condition = array();
         $Errors = array();
         $result = $this->admin_model->find_zone();
@@ -610,17 +625,28 @@ class Report extends MY_Controller {
         $start_date = '';
         $end_date = '';
         $data['result'] = NULL;
+
         if ($this->input->get('Zone')) {
             $Zone = ($this->Designation == 'ZSM') ? $this->Zone : $this->input->get('Zone');
             $condition[0] = "em.Zone = '" . $Zone . "'";
             $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
-            $Territory = $this->User_model->getTerritory1(array("em.Zone = '" . $this->input->get('Zone') . "'", "em.Division = 'Diabetes'", "em.Profile = 'BDM' "));
+            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
+            array_push($TerritoryConditions, "em.Division = 'Diabetes'");
+            array_push($TerritoryConditions, "em.Profile = 'BDM' ");
+            $Territory = $this->User_model->getTerritory1($TerritoryConditions);
             $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory');
         }
 
         if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
             $condition[1] = "em.Territory = '" . $this->input->get('Territory') . "'";
             $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
+        }
+
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($TerritoryConditions, $reporting);
+            array_push($condition, $reporting);
         }
 
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date') != '') {
@@ -654,11 +680,15 @@ class Report extends MY_Controller {
         $start_date = '';
         $end_date = '';
         $data['result'] = array();
+
         if ($this->input->get('Zone')) {
             $Zone = ($this->Designation == 'ZSM') ? $this->Zone : $this->input->get('Zone');
             $condition[0] = "em.Zone = '" . $Zone . "'";
             $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
-            $Territory = $this->User_model->getTerritory1(array("em.Zone = '" . $this->input->get('Zone') . "'", "em.Division = 'ThromBI'", "em.Profile = 'BDM' "));
+            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
+            array_push($TerritoryConditions, "em.Division = 'Diabetes'");
+            array_push($TerritoryConditions, "em.Profile = 'BDM' ");
+            $Territory = $this->User_model->getTerritory1($TerritoryConditions);
             $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory');
         }
 
@@ -666,6 +696,15 @@ class Report extends MY_Controller {
             $condition[1] = "em.Territory = '" . $this->input->get('Territory') . "'";
             $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
         }
+
+
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($TerritoryConditions, $reporting);
+            array_push($condition, $reporting);
+        }
+
 
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date') != '') {
             $start_date = $this->input->get('Start_date');
@@ -730,6 +769,13 @@ class Report extends MY_Controller {
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date')) {
             $start_date = $this->input->get('Start_date');
             $end_date = $this->input->get('End_date');
+        }
+
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($TerritoryConditions, $reporting);
+            array_push($condition, $reporting);
         }
 
         if ($this->input->get('Product') != '' && $this->input->get('Product') != 'All') {
@@ -856,11 +902,18 @@ class Report extends MY_Controller {
 
     function TargetAssigned() {
         $condition = array();
+
         if ($this->input->get('Zone') != '' && $this->input->get('Zone') != '-1') {
             $condition[0] = "AND em.Zone = '" . $this->input->get('Zone') . "'";
         }
         if ($this->input->get('Division') != '') {
             $condition[1] = "AND em.Division = '" . $this->input->get('Division') . "'";
+        }
+
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "AND em.Reporting_VEEVA_ID = '" . $this->VEEVA_Employee_ID."'";
+            array_push($condition, $reporting);
         }
 
         $month = $this->input->get('month');
@@ -905,6 +958,7 @@ class Report extends MY_Controller {
         $this->load->model('asm_model');
         $month = $this->input->get('month');
         $Year = $this->input->get('year');
+        $condition = array();
 
         $condition = array();
         if ($this->input->get('Zone') != '' && $this->input->get('Zone') != '-1') {
@@ -912,6 +966,12 @@ class Report extends MY_Controller {
         }
         if ($this->input->get('Division') != '') {
             $condition[1] = "em.Division = '" . $this->input->get('Division') . "'";
+        }
+
+        ///ASM Reporting Condition
+        if (strtoupper($this->Designation) == 'ASM') {
+            $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
+            array_push($condition, $reporting);
         }
         ?>
         <script src="<?php echo asset_url(); ?>js/excellentexport.min.js" type="text/javascript"></script>

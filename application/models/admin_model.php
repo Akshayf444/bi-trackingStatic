@@ -1655,6 +1655,7 @@ EMAILBODY;
             $sql .= join(" ", $conditions);
         }
         $sql .= " ";
+        //echo $sql;
         $query = $this->db->query($sql);
         return $query->result();
     }

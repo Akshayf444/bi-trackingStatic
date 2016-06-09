@@ -85,8 +85,8 @@
                     <!-- Sidebar user panel -->
                     <ul class="sidebar-menu">
                         <?php
-                        if (isset($CI->Designation) && $CI->Designation == 'ZSM' || $CI->Designation == 'Marketing' || $CI->Designation == 'NSM' || $CI->Designation == 'HO User' || $CI->Designation == 'MD' || $CI->Designation == 'ETM') {
-                            if ($CI->Designation == 'ZSM') {
+                        if (isset($CI->Designation) && strtoupper($CI->Designation) == 'ZSM' || strtoupper($CI->Designation) == 'Marketing' || strtoupper($CI->Designation) == 'NSM' || strtoupper($CI->Designation) == 'HO USER' || strtoupper($CI->Designation) == 'MD' || strtoupper($CI->Designation) == 'ETM' || strtoupper($CI->Designation) == 'ASM') {
+                            if (strtoupper($CI->Designation) == 'ZSM' || strtoupper($CI->Designation) == 'ASM') {
                                 $Zone = isset($CI->Zone) && $CI->Zone != '' ? 'Zone=' . $CI->Zone : '';
                                 $Division = isset($CI->Division) && $CI->Division != '' && $CI->Division != 'Both' ? '&Division=' . $CI->Division : '';
                             } else {
@@ -94,7 +94,7 @@
                                 $Division = isset($CI->Division) && $CI->Division != '' && $CI->Division != 'Both' ? '&Division=' . $CI->Division : '';
                             }
                             ?>
-                            <?php if ($CI->Designation == 'ZSM') { ?>
+                            <?php if (strtoupper($CI->Designation) == 'ZSM') { ?>
                                 <li>                                
                                     <a href="<?php echo site_url('Report/ZSMdashboard'); ?>">
                                         <i class="fa fa-dashboard"></i>
@@ -102,12 +102,65 @@
                                     </a>
                                 </li>
                             <?php } ?>
-                            <li>                                
-                                <a href="<?php echo site_url('Report/dashboard?' . $Zone . $Division); ?>">
-                                    <i class="fa fa-dashboard"></i>
-                                    <span>Dashboard</span>
-                                </a>
-                            </li>
+                            <?php if (strtoupper($CI->Designation) == 'ASM') { ?>
+                                <li>
+                                    <a href="<?php echo site_url('ASM/dashboard'); ?>">
+                                        <i class="fa fa-dashboard"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo site_url('ASM/ASM_update'); ?>">
+                                        <i class="fa fa-user"></i>
+                                        <span>Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo site_url('ASM/target'); ?>">
+                                        <i class="fa fa-bullseye"></i> <span>Assign Target</span> 
+                                    </a>
+                                </li>
+                                <li class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-line-chart"></i> <span>Approve Planning</span> <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu treeview" style="display: none;">
+                                        <li class=""><a href="<?php echo site_url('ASM/asm_rx_planning'); ?>"><i class="fa fa-circle-o"></i>  Rx Planning</a></li>
+
+                                        <li class=""><a href="<?php echo site_url('ASM/activity_planning'); ?>"><i class="fa fa-circle-o"></i>  Activity Planning</a></li>
+                                    </ul>
+                                </li>
+                                <li class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-file-o"></i> <span>Approve Reporting</span> <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="display: none;">
+
+                                        <li class=""><a href="<?php echo site_url('ASM/reporting_rx'); ?>"><i class="fa fa-circle-o"></i>  Rx Reporting</a></li>
+
+                                        <li class=""><a href="<?php echo site_url('ASM/reporting_activity'); ?>"><i class="fa fa-circle-o"></i>  Activity Reporting</a></li>
+                                    </ul>
+                                </li>
+                                <?php if (strtolower($CI->Division) == 'thrombi' && strtoupper($CI->Designation) == 'ASM') { ?>
+                                    <li>
+                                        <a href="<?php echo site_url('ASM/reporting_info'); ?>">
+                                            <i class="fa fa-dashboard"></i> <span>Actilyse Dashboard</span> 
+                                        </a>
+                                    </li>
+                                <?php } ?>
+                                <?php
+                            }
+                            ?>
+                            <?php if (strtoupper($CI->Designation) != 'ASM') { ?>
+                                <li>                                
+                                    <a href="<?php echo site_url('Report/dashboard?' . $Zone . $Division); ?>">
+                                        <i class="fa fa-dashboard"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+                            <?php }
+                            ?>
+
                             <li>
                                 <a href="<?php echo site_url('Report/dailyTrend?' . $Zone . $Division); ?>">
                                     <i class="fa fa-file-text"></i>
@@ -121,9 +174,9 @@
                                 </a>
                             </li>
                             <?php
-                            if (isset($CI->Division) && $CI->Division == 'ThromBI' || $CI->Division == 'Diabetes' || $CI->Division == 'Both') {
+                            if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' ||  strtolower($CI->Division) == 'diabetes' ||  strtolower($CI->Division) == 'both') {
 
-                                if (isset($CI->Division) && $CI->Division == 'ThromBI' || $CI->Division == 'Both') {
+                                if (isset($CI->Division) &&  strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'both') {
                                     ?>
                                     <li>
                                         <a href="<?php echo site_url('Report/thrombiTrend?' . $Zone); ?>">
@@ -133,7 +186,7 @@
                                     </li>                                 
                                     <?php
                                 }
-                                if (isset($CI->Division) && $CI->Division == 'Diabetes' || $CI->Division == 'Both') {
+                                if (isset($CI->Division) && strtolower($CI->Division)== 'diabetes' ||  strtolower($CI->Division) == 'both') {
                                     ?>
                                     <li>
                                         <a href="<?php echo site_url('Report/diabetesTrend?' . $Zone); ?>">
@@ -158,8 +211,9 @@
                                     <span>Status Report</span>
                                 </a>
                             </li>
+
                             <?php
-                            if (isset($CI->Division) && $CI->Division == 'ThromBI' || $CI->Division == 'Both') {
+                            if (isset($CI->Division) &&  strtolower($CI->Division) == 'thrombi' && $CI->Designation != 'ASM' ||  strtolower($CI->Division) == 'both') {
                                 ?>
                                 <li>
                                     <a href="<?php echo site_url('Report/actilyse_report?' . $Zone); ?>">
