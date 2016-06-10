@@ -147,9 +147,6 @@
                     <!-- Sidebar user panel -->
                     <ul class="sidebar-menu">
                         <li>
-                            <input type="text" class="form-control" placeholder="Search">
-                        </li>
-                        <li>
                             <a href="<?php echo site_url('ASM/dashboard'); ?>">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Dashboard</span>

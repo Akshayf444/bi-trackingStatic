@@ -635,7 +635,7 @@ class User extends MY_Controller {
                         }
                     }
                 }
-                
+
                 if (!empty($messages)) {
                     $this->session->set_userdata('message', join(" ", array_unique($messages)));
                     $logdata = array(
@@ -1387,7 +1387,7 @@ EMAILBODY;
     /* ~~~~~~  END OF SCHEDULERS ~~~~~~ */
 
     public function Doctorlist() {
-        
+
         $data = array('title' => 'Customer List', 'content' => 'User/list', 'page_title' => 'Doctor List', 'view_data' => 'blicnk');
         $this->load->view('bdmfront', $data);
     }
@@ -1426,7 +1426,7 @@ EMAILBODY;
         $condition = array();
         if ($this->input->get('Zone') != '') {
             $Zone = $this->Designation == 'ZSM' ? $this->Zone : $this->input->get('Zone');
-            $condition[0] = "em.Zone = '" . $Zone . "'";
+            $condition[] = "em.Zone = '" . $Zone . "'";
             $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
             array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
         }
@@ -1434,17 +1434,17 @@ EMAILBODY;
         if ($this->input->get('Division') != '') {
             $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
             $Division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
-            $condition[1] = "em.Division = '" . $Division . "'";
+            $condition[] = "em.Division = '" . $Division . "'";
             array_push($TerritoryConditions, "em.Division = '" . $Division . "'");
             $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
         }
 
         if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
-            $condition[3] = "em.Territory = '" . $this->input->get('Territory') . "'";
+            $condition[] = "em.Territory = '" . $this->input->get('Territory') . "'";
         }
 
         if ($this->input->get('VEEVA_Employee_ID') && $this->input->get('VEEVA_Employee_ID') != '') {
-            $condition[5] = "em.VEEVA_Employee_ID = '" . $this->input->get('VEEVA_Employee_ID') . "'";
+            $condition[] = "em.VEEVA_Employee_ID = '" . $this->input->get('VEEVA_Employee_ID') . "'";
         }
         ///Fetch Monthly Trend Data
         if ($this->input->get('Product') != '' && $this->input->get('Product') != 'All') {
@@ -1535,7 +1535,7 @@ EMAILBODY;
     public function Actilyse_dashboard() {
         if ($this->is_logged_in('BDM')) {
             $data['show'] = $this->User_model->actilyse_data($this->VEEVA_Employee_ID);
-            $data = array('title' => 'Actilyse Dashboard', 'page_title'=>'Actilyse Dashboard', 'content' => 'User/actilyse_dashboard', 'view_data' => $data);
+            $data = array('title' => 'Actilyse Dashboard', 'page_title' => 'Actilyse Dashboard', 'content' => 'User/actilyse_dashboard', 'view_data' => $data);
             $this->load->view('bdmfront', $data);
         } else {
             $this->logout();
@@ -1574,10 +1574,9 @@ EMAILBODY;
                     'No_of_doctors_in_stroke_team' => $this->input->post('No_of_doctors_in_stroke_team'),
                     'Approach' => $this->input->post('Approach'),
                     'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID,
-                    'Doctor_id'=>$this->input->post('Doctor_id')
-                 
+                    'Doctor_id' => $this->input->post('Doctor_id')
                 );
-                
+
                 if ($this->input->post('Actilyse_id') == '' || $this->input->post('Actilyse_id') == NULL) {
                     $this->User_model->insert_actilyse($data);
                     redirect('User/Actilyse_dashboard', 'refresh');
@@ -1586,7 +1585,7 @@ EMAILBODY;
                     redirect('User/Actilyse_dashboard', 'refresh');
                 }
             }
-           $name=$this->input->get('Hospital');
+            $name = $this->input->get('Hospital');
             $data = array('title' => 'Actilyse Data', 'content' => 'User/actilyse', 'view_data' => $data, 'page_title' => $name,);
             $this->load->view('bdmfront', $data);
         }

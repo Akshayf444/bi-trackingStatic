@@ -42,7 +42,7 @@
 
             <!-- Main Header -->
             <header class="main-header">
-                <a href="<?php echo site_url('Report/dashboard'); ?>" class="logo" style="background-color: #fff;"><b><img src="<?php echo asset_url() ?>images/Boehringer.png" ></b></a>
+                <a href="<?php echo ($this->Designation != 'ASM') ? site_url('Report/dashboard') : ''; ?>" class="logo" style="background-color: #fff;"><b><img src="<?php echo asset_url() ?>images/Boehringer.png" ></b></a>
                 <!-- Header Navbar -->
                 <nav class="navbar navbar-static-top" role="navigation">
                     <!-- Sidebar toggle button-->
@@ -51,27 +51,17 @@
                     </a>
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
-                        <ul class="nav navbar-nav">
+                        <ul class="nav navbar-nav"  style="padding-top: 10px;">
                             <!-- User Account Menu -->
                             <li class="dropdown user user-menu">
                                 <!-- Menu Toggle Button -->
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <p>
                                     <?php $CI = & get_instance(); ?>
-                                    <span class="hidden-xs"><?php echo isset($CI->Full_Name) ? $CI->Full_Name : ''; ?></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php //echo $CI->user_name; ?>                                   
-                                    <!-- Menu Footer-->
-                                    <li class="user-footer">
-                                        <div class="pull-right">
-                                            <?php if (isset($CI->Designation) && $CI->Designation == 'ZSM' || $CI->Designation == 'NSM' || $CI->Designation == 'HO User' || $CI->Designation == 'Marketing' || $CI->Designation == 'MD' || $CI->Designation == 'ETM') {
-                                                ?> 
-                                                <a href="<?php echo site_url('User/logout'); ?>" class="btn btn-default btn-flat">Sign out</a>
-                                            <?php }
-                                            ?>
-                                        </div>
-                                    </li>
-                                </ul>
+                                    <span ><b><?php echo isset($CI->Full_Name) ? $CI->Full_Name : ''; ?></b>&nbsp;</span>
+                                    <a class="text-aqua" href="#" data-toggle="modal" data-target=".logout">
+                                        <span style="font-size: 20px" class="fa fa-power-off">  </span>
+                                    </a>
+                                </p>
                             </li>
                         </ul>
                     </div>
@@ -174,9 +164,9 @@
                                 </a>
                             </li>
                             <?php
-                            if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' ||  strtolower($CI->Division) == 'diabetes' ||  strtolower($CI->Division) == 'both') {
+                            if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'diabetes' || strtolower($CI->Division) == 'both') {
 
-                                if (isset($CI->Division) &&  strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'both') {
+                                if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' || strtolower($CI->Division) == 'both') {
                                     ?>
                                     <li>
                                         <a href="<?php echo site_url('Report/thrombiTrend?' . $Zone); ?>">
@@ -186,7 +176,7 @@
                                     </li>                                 
                                     <?php
                                 }
-                                if (isset($CI->Division) && strtolower($CI->Division)== 'diabetes' ||  strtolower($CI->Division) == 'both') {
+                                if (isset($CI->Division) && strtolower($CI->Division) == 'diabetes' || strtolower($CI->Division) == 'both') {
                                     ?>
                                     <li>
                                         <a href="<?php echo site_url('Report/diabetesTrend?' . $Zone); ?>">
@@ -213,7 +203,7 @@
                             </li>
 
                             <?php
-                            if (isset($CI->Division) &&  strtolower($CI->Division) == 'thrombi' && $CI->Designation != 'ASM' ||  strtolower($CI->Division) == 'both') {
+                            if (isset($CI->Division) && strtolower($CI->Division) == 'thrombi' && $CI->Designation != 'ASM' || strtolower($CI->Division) == 'both') {
                                 ?>
                                 <li>
                                     <a href="<?php echo site_url('Report/actilyse_report?' . $Zone); ?>">
@@ -247,7 +237,25 @@
                 <section class="content" >
                     <?php $this->load->view($content, $view_data); ?>
                 </section>
-
+                <div class="modal fade logout" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg largeModal">
+                        <div class="col-lg-8 col-lg-push-2">
+                            <div class="modal-content logoutModal">
+                                <div class="modal-header huge" ><i class="fa fa-sign-out"></i> Log Out ?</div>
+                                <div class=" modal-body"><p>Are you sure you want to log out?</p>
+                                    Press <span class="text-danger">No</span> if you want to continue work. Press <span class="text-success">Yes</span> to logout current user.</div>
+                                <div class="modal-footer">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <a href="<?php echo site_url('User/logout'); ?>" class="btn btn-success">Yes</a>
+                                            <a href="#" class="btn btn-danger" data-dismiss="modal" aria-label="Close">No</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div><!-- ./wrapper -->  
             <script type="text/javascript">
                 var config = {

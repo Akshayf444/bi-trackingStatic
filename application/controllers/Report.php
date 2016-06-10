@@ -17,10 +17,12 @@ class Report extends MY_Controller {
         $this->nextMonth = date('m');
         $this->nextYear = date('Y');
 
-        if ($this->Designation == 'ZSM') {
+        $this->Designation = strtoupper($this->Designation);
+        if ($this->Designation == 'ZSM' || $this->Designation == 'ASM') {
             $this->ZoneDropdown = 'disabled';
         }
-        if ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM') {
+
+        if ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' || $this->Designation == 'ASM') {
             $this->DivisionDropdown = 'disabled';
         }
 
@@ -320,7 +322,7 @@ class Report extends MY_Controller {
         $Activity_count = 0;
         $Activity_report = 0;
         $conditions = array();
-        if ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM') {
+        if ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM') {
             if (isset($this->Zone) && $this->Zone != '' && $this->Zone != '-1') {
                 $conditions[1] = "em.Zone = '" . $this->Zone . "'";
             }
@@ -344,7 +346,7 @@ class Report extends MY_Controller {
 
         $Product_id = 4;
         $conditions = array();
-        if ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM') {
+        if ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM') {
             if (isset($this->Zone) && $this->Zone != '' && $this->Zone != '-1') {
                 $conditions[1] = "em.Zone = '" . $this->Zone . "'";
             }
@@ -456,7 +458,7 @@ class Report extends MY_Controller {
         ///Division Conditions
         if ($this->input->get('Division') != '') {
             $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
-            $Division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
+            $Division = ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
             $condition[1] = "em.Division = '" . $Division . "'";
             array_push($TerritoryConditions, "em.Division = '" . $Division . "'");
             $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name');
@@ -470,7 +472,7 @@ class Report extends MY_Controller {
             array_push($this->Errors, 'Please Select Product');
         }
 
-        
+
         ///ASM Reporting Condition
         if (strtoupper($this->Designation) == 'ASM') {
             $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
@@ -533,6 +535,7 @@ class Report extends MY_Controller {
         $product = 0;
         $data['Territory'] = '';
         $data['result'] = NULL;
+        $condition = array();
 
         ///Initial Product Dropdown
         $productlist = $this->admin_model->show_pro_list();
@@ -540,34 +543,32 @@ class Report extends MY_Controller {
 
         array_push($TerritoryConditions, "em.Profile = 'BDM' ");
 
-        $condition = array();
-        if ($this->input->get('Zone') != '') {
-            $Zone = $this->Designation == 'ZSM' ? $this->Zone : $this->input->get('Zone');
-            $condition[0] = "em.Zone = '" . $Zone . "'";
-            $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
-            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
-        }
-
-        if ($this->input->get('Division') != '') {
-            $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
-            $Division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
-            $condition[1] = "em.Division = '" . $Division . "'";
-            array_push($TerritoryConditions, "em.Division = '" . $Division . "'");
-            $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
-        }
-
-        if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
-            $condition[3] = "em.Territory = '" . $this->input->get('Territory') . "'";
-        }
-
-        
         ///ASM Reporting Condition
         if (strtoupper($this->Designation) == 'ASM') {
             $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
             array_push($TerritoryConditions, $reporting);
             array_push($condition, $reporting);
         }
-        
+
+        if ($this->input->get('Zone') != '') {
+            $Zone = $this->Designation == 'ZSM' ? $this->Zone : $this->input->get('Zone');
+            $condition[] = "em.Zone = '" . $Zone . "'";
+            $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
+            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
+        }
+
+        if ($this->input->get('Division') != '') {
+            $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
+            $Division = ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
+            $condition[] = "em.Division = '" . $Division . "'";
+            array_push($TerritoryConditions, "em.Division = '" . $Division . "'");
+            $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
+        }
+
+        if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
+            $condition[] = "em.Territory = '" . $this->input->get('Territory') . "'";
+        }
+
         ///Fetch Monthly Trend Data
         if ($this->input->get('Product') != '' && $this->input->get('Product') != 'All') {
             $product = $this->input->get('Product');
@@ -633,13 +634,10 @@ class Report extends MY_Controller {
             array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
             array_push($TerritoryConditions, "em.Division = 'Diabetes'");
             array_push($TerritoryConditions, "em.Profile = 'BDM' ");
-            $Territory = $this->User_model->getTerritory1($TerritoryConditions);
-            $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory');
         }
 
         if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
             $condition[1] = "em.Territory = '" . $this->input->get('Territory') . "'";
-            $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
         }
 
         ///ASM Reporting Condition
@@ -648,6 +646,10 @@ class Report extends MY_Controller {
             array_push($TerritoryConditions, $reporting);
             array_push($condition, $reporting);
         }
+
+        ///Generate Territory Dropdown
+        $Territory = $this->User_model->getTerritory1($TerritoryConditions);
+        $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
 
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date') != '') {
             $start_date = $this->input->get('Start_date');
@@ -671,6 +673,7 @@ class Report extends MY_Controller {
     }
 
     function ThrombiTrend() {
+        $TerritoryConditions = array();
         $Errors = array();
         $this->load->model('Master_Model');
         $this->load->model('User_model');
@@ -681,23 +684,6 @@ class Report extends MY_Controller {
         $end_date = '';
         $data['result'] = array();
 
-        if ($this->input->get('Zone')) {
-            $Zone = ($this->Designation == 'ZSM') ? $this->Zone : $this->input->get('Zone');
-            $condition[0] = "em.Zone = '" . $Zone . "'";
-            $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
-            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
-            array_push($TerritoryConditions, "em.Division = 'Diabetes'");
-            array_push($TerritoryConditions, "em.Profile = 'BDM' ");
-            $Territory = $this->User_model->getTerritory1($TerritoryConditions);
-            $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory');
-        }
-
-        if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
-            $condition[1] = "em.Territory = '" . $this->input->get('Territory') . "'";
-            $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory', $this->input->get('Territory'));
-        }
-
-
         ///ASM Reporting Condition
         if (strtoupper($this->Designation) == 'ASM') {
             $reporting = "em.Reporting_VEEVA_ID ='" . $this->VEEVA_Employee_ID . "'";
@@ -705,6 +691,25 @@ class Report extends MY_Controller {
             array_push($condition, $reporting);
         }
 
+        ///Zonal Conditions
+        if ($this->input->get('Zone')) {
+            $Zone = ($this->Designation == 'ZSM') ? $this->Zone : $this->input->get('Zone');
+            $condition[] = "em.Zone = '" . $Zone . "'";
+            $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
+
+            array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
+            array_push($TerritoryConditions, "em.Division = 'thrombi'");
+            array_push($TerritoryConditions, "em.Profile = 'BDM' ");
+        }
+
+        if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
+            $condition[] = "em.Territory = '" . $this->input->get('Territory') . "'";
+        }
+
+
+        ///Generate Territory Dropdown
+        $Territory = $this->User_model->getTerritory1($TerritoryConditions);
+        $data['Territory'] = $this->Master_Model->generateDropdown($Territory, 'id', 'Territory');
 
         if ($this->input->get('Start_date') != '' && $this->input->get('End_date') != '') {
             $start_date = $this->input->get('Start_date');
@@ -749,19 +754,19 @@ class Report extends MY_Controller {
 
         if ($this->input->get('Zone') != '') {
             $Zone = $this->Designation == 'ZSM' ? $this->Zone : $this->input->get('Zone');
-            $condition[0] = "em.Zone = '" . $Zone . "'";
+            $condition[] = "em.Zone = '" . $Zone . "'";
             $data['zone'] = $this->Master_Model->generateDropdown($result, 'Zone', 'Zone', $this->input->get('Zone'));
             array_push($TerritoryConditions, "em.Zone = '" . $this->input->get('Zone') . "'");
         }
 
         if ($this->input->get('Territory') && $this->input->get('Territory') != '') {
-            $condition[1] = "em.Territory = '" . $this->input->get('Territory') . "'";
+            $condition[] = "em.Territory = '" . $this->input->get('Territory') . "'";
         }
 
         if ($this->input->get('Division') != '') {
             $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
-            $division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
-            $condition[2] = "em.Division = '" . $division . "'";
+            $division = ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
+            $condition[] = "em.Division = '" . $division . "'";
             array_push($TerritoryConditions, "em.Division = '" . $division . "'");
             $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name');
         }
@@ -848,7 +853,7 @@ class Report extends MY_Controller {
 
         if ($this->input->get('Division') != '') {
             $productlist = $this->Master_Model->BrandList($this->input->get('Division'));
-            $Division = ($this->Designation == 'Marketing' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
+            $Division = ($this->Designation == 'MARKETING' || $this->Designation == 'NSM' || $this->Designation == 'ZSM' ) ? $this->Division : $this->input->get('Division');
             $condition[1] = "em.Division = '" . $Division . "'";
             $data['productlist'] = $this->Master_Model->generateDropdown($productlist, 'id', 'Brand_Name', $this->input->get('Product'));
         }
@@ -912,7 +917,7 @@ class Report extends MY_Controller {
 
         ///ASM Reporting Condition
         if (strtoupper($this->Designation) == 'ASM') {
-            $reporting = "AND em.Reporting_VEEVA_ID = '" . $this->VEEVA_Employee_ID."'";
+            $reporting = "AND em.Reporting_VEEVA_ID = '" . $this->VEEVA_Employee_ID . "'";
             array_push($condition, $reporting);
         }
 
