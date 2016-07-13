@@ -18,6 +18,11 @@
     <div class="row">
         <div class="col-lg-4 col-md-4 col-sm-4 col-sm-offset-2 col-xs-6 col-xs-offset-3 col-md-offset-1 col-lg-offset-1" style="padding: 15px">            
             <img  src="<?php echo asset_url() ?>images/travels.png" width="100%"  >
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <a href="<?php echo site_url('User/video');?>" class="badge label-info">Click Here To View User Guide</a>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 col-lg-offset-1 col-md-offset-1   ">
             <div class="panel panel-default">

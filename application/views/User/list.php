@@ -4,17 +4,22 @@
             <thead>
                 <tr>
                     <th>VEEVA ID</th>
-                    <th>Doctor Name</th>
-                    <th>Specialty</th>
-                    <th>Action</th>
+                    <th>Doctor/Hospital Name</th>
+<!--                    <th>Specialty</th>-->
+                    <th>Individual Type</th>
+
                 </tr>
             </thead>
             <tbody>
                 <?php
-                for ($index = 0; $index < 5; $index++) {
-                    echo '<tr><td>0019000001N8CkQAAV</td><td>ABCD</td><td>ABCD</td>
-                <td><input type="button" class="btn btn-success btn-xs" value="View Detail" ></td></tr>';
-                }
+                if (isset($doctorlist) && !empty($doctorlist))
+                    foreach ($doctorlist as $value) {
+                        echo '<tr><td>' . $value->Account_ID . '</td>'
+                        . '<td><a href="' . site_url('User/viewDetail/' . $value->Account_ID . '/' . rawurlencode(trim(str_replace(".", "", $value->Account_Name)))) . '" >' . $value->Account_Name . '</a></td>'
+                        //. '<td>' . $value->Specialty . '</td>'
+                        . '<td>' . $value->Individual_Type . '</td>';
+                        echo '</tr>';
+                    }
                 ?>
             </tbody>
         </table>

@@ -16,6 +16,12 @@ class Doctor_Model extends MY_model {
         return $query->result();
     }
 
+    public function getCustomer($VEEVA_Employee_ID = 0) {
+        $sql = "SELECT dm.*  FROM (SELECT * FROM Employee_Doc  WHERE VEEVA_Employee_ID = '$VEEVA_Employee_ID' and Status = 1 ) as ed INNER JOIN Doctor_Master dm ON ed.VEEVA_Account_ID = dm.Account_ID ";
+        $query = $this->db->query($sql);
+        return $query->result();
+    }
+
     public function getProfiledDoctor($VEEVA_Employee_ID = 0, $Product_Id, $Individual_Type, $Cycle) {
         $sql = "SELECT 
                     dm.*,pf.Profile_id,

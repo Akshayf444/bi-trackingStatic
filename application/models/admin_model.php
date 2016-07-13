@@ -1207,8 +1207,7 @@ EMAILBODY;
                     WHERE Product_id = {$product} AND Year = '$year' AND Approve_Status = 'Approved'
                     GROUP BY `Doctor_Id`,
                       `VEEVA_Employee_ID`) rp 
-                    INNER JOIN `Employee_Doc` ed 
-                      ON rp.`Doctor_Id` = ed.`VEEVA_Account_ID` AND ed.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND ed.Status = 1              
+          
                     INNER JOIN `Doctor_Master` dm 
                       ON dm.`Account_ID` = rp.`Doctor_Id` 
                     INNER JOIN `Employee_Master` em 
@@ -1725,6 +1724,526 @@ EMAILBODY;
         }
 
         return $veevaid;
+    }
+
+    public function getDoctorStatus2($year = '2016', $product = 0, $conditions = array()) {
+        $rpProduct = '';
+        $apProduct = '';
+        $arProduct = '';
+        $planProduct = '';
+        if ($product > 0) {
+            $rpProduct = "AND Product_id = " . $product;
+            $apProduct = "AND ap.Product_id = " . $product;
+            $arProduct = "AND ar.Product_id = " . $product;
+            $planProduct = "WHERE Product_id = " . $product;
+        }
+        $sql = "SELECT 
+                    SUM(m1) AS m1,
+                    SUM(m2) AS m2,
+                    SUM(m3) AS m3,
+                    SUM(m4) AS m4,
+                    SUM(m5) AS m5,
+                    SUM(m6) AS m6,
+                    SUM(m7) AS m7,
+                    SUM(m8) AS m8,
+                    SUM(m9) AS m9,
+                    SUM(m10) AS m10,
+                    SUM(m11) AS m11,
+                    SUM(m12) AS m12,
+                    SUM(Ac1) AS Ac1,
+                    SUM(Ac2) AS Ac2,
+                    SUM(Ac3) AS Ac3,
+                    SUM(Ac4) AS Ac4,
+                    SUM(Ac5 ) AS Ac5,
+                    SUM(Ac6) AS Ac6,
+                    SUM(Ac7) AS Ac7,
+                    SUM(Ac8) AS Ac8,
+                    SUM(Ac9) AS Ac9,
+                    SUM(Ac10) AS Ac10,
+                    SUM(Ac11) AS Ac11,
+                    SUM(Ac12) AS Ac12 
+                  FROM
+                    (SELECT 
+                      SUM(
+                      CASE
+                        WHEN month = 1 OR month = 01
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m1,
+                    SUM(
+                      CASE
+                        WHEN month = 2  OR month = 02
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m2,
+                    SUM(
+                      CASE
+                        WHEN month = 3  OR month = 03
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m3,
+                    SUM(
+                      CASE
+                        WHEN month = 4  OR month = 04
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m4,
+                    SUM(
+                      CASE
+                        WHEN month = 5  OR month = 05
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m5,
+                    SUM(
+                      CASE
+                        WHEN month = 6  OR month = 06
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m6,
+                    SUM(
+                      CASE
+                        WHEN month = 7  OR month = 07
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m7,
+                    SUM(
+                      CASE
+                        WHEN month = 8  OR month = 08
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m8,
+                    SUM(
+                      CASE
+                        WHEN month = 9  OR month = 09
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m9,
+                    SUM(
+                      CASE
+                        WHEN month = 10  
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m10,
+                    SUM(
+                      CASE
+                        WHEN month = 11  
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m11,
+                    SUM(
+                      CASE
+                        WHEN month = 12  
+                        AND Year = '$year' 
+                        THEN Planned_Rx 
+                        ELSE 0 
+                      END
+                    ) AS m12,Doctor_Id,VEEVA_Employee_ID
+                    FROM
+                      `Rx_Planning` 
+                    WHERE Product_id = {$product} AND Year = '$year' AND Approve_Status = 'Approved' ";
+        if (!empty($conditions)) {
+            $sql.=" AND " . join(" AND ", $conditions);
+        }
+        $sql .= " GROUP BY `Doctor_Id`,
+                      `VEEVA_Employee_ID`) rp 
+                    INNER JOIN `Employee_Doc` ed 
+                      ON rp.`Doctor_Id` = ed.`VEEVA_Account_ID` AND ed.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND ed.Status = 1              
+                    INNER JOIN `Doctor_Master` dm 
+                      ON dm.`Account_ID` = rp.`Doctor_Id` 
+                    INNER JOIN `Employee_Master` em 
+                      ON rp.`VEEVA_Employee_ID` = em.`VEEVA_Employee_ID` 
+                    LEFT JOIN 
+                      (SELECT 
+                         SUM(
+                      CASE
+                        WHEN month = 1 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac1,
+                    SUM(
+                      CASE
+                        WHEN month = 2 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac2,
+                    SUM(
+                      CASE
+                        WHEN month = 3 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac3,
+                    SUM(
+                      CASE
+                        WHEN month = 4 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac4,
+                    SUM(
+                      CASE
+                        WHEN month = 5 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac5,
+                    SUM(
+                      CASE
+                        WHEN month = 6 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac6,
+                    SUM(
+                      CASE
+                        WHEN month = 7 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac7,
+                    SUM(
+                      CASE
+                        WHEN month = 8 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac8,
+                    SUM(
+                      CASE
+                        WHEN month = 9 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac9,
+                    SUM(
+                      CASE
+                        WHEN month = 10 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac10,
+                    SUM(
+                      CASE
+                        WHEN month = 11 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac11,
+                    SUM(
+                      CASE
+                        WHEN month = 12 
+                        AND Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac12 ,`VEEVA_Employee_ID`,Doctor_Id,MONTH,YEAR
+                      FROM
+                        `Rx_Actual` 
+                      WHERE YEAR = '$year' AND Actual_Rx > 0 AND Approve_Status = 'Approved'
+                        AND Product_id = {$product}  ";
+        if (!empty($conditions)) {
+            $sql.=" AND " . join(" AND ", $conditions);
+        }
+
+        $sql .= "   GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
+                      ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` 
+                      AND rp.`Doctor_Id` = rx.`Doctor_Id` ";
+
+        $sql.=" ";
+        $query = $this->db->query($sql);
+        ///echo $sql . "<br/>";
+
+        return $query->result();
+    }
+
+    public function getDoctorStatus3($year = '2016', $product = 0, $conditions = array()) {
+        $rpProduct = '';
+        $apProduct = '';
+        $arProduct = '';
+        $planProduct = '';
+        if ($product > 0) {
+            $rpProduct = "AND Product_id = " . $product;
+            $apProduct = "AND ap.Product_id = " . $product;
+            $arProduct = "AND ar.Product_id = " . $product;
+            $planProduct = "WHERE Product_id = " . $product;
+        }
+        $sql = "SELECT 
+                    SUM(m1) AS m1,
+                    SUM(m2) AS m2,
+                    SUM(m3) AS m3,
+                    SUM(m4) AS m4,
+                    SUM(m5) AS m5,
+                    SUM(m6) AS m6,
+                    SUM(m7) AS m7,
+                    SUM(m8) AS m8,
+                    SUM(m9) AS m9,
+                    SUM(m10) AS m10,
+                    SUM(m11) AS m11,
+                    SUM(m12) AS m12,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 1 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac1,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 2 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac2,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 3 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac3,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 4 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac4,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 5 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac5,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 6 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac6,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 7 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac7,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 8 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac8,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 9 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac9,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 10 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac10,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 11 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac11,
+                    SUM(
+                      CASE
+                        WHEN rx.month = 12 
+                        AND rx.Year = '$year' 
+                        THEN Actual_Rx 
+                        ELSE 0 
+                      END
+                    ) AS Ac12 
+                  FROM
+                    (SELECT 
+                      Doctor_Id,VEEVA_Employee_ID,
+                    SUM(
+                      CASE
+                        WHEN month = 1 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m1,
+                    SUM(
+                      CASE
+                        WHEN month = 2 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m2,
+                    SUM(
+                      CASE
+                        WHEN month = 3 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m3,
+                    SUM(
+                      CASE
+                        WHEN month = 4 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m4,
+                    SUM(
+                      CASE
+                        WHEN month = 5 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m5,
+                    SUM(
+                      CASE
+                        WHEN month = 6 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m6,
+                    SUM(
+                      CASE
+                        WHEN month = 7 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m7,
+                    SUM(
+                      CASE
+                        WHEN month = 8 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m8,
+                    SUM(
+                      CASE
+                        WHEN month = 9 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m9,
+                    SUM(
+                      CASE
+                        WHEN month = 10 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m10,
+                    SUM(
+                      CASE
+                        WHEN month = 11 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m11,
+                    SUM(
+                      CASE
+                        WHEN month = 12 
+                        AND Year = '$year' 
+                        THEN 1 
+                        ELSE 0 
+                      END
+                    ) AS m12
+                    FROM
+                      `Activity_Planning` 
+                    WHERE Product_id = {$product} AND Year = '$year' AND Approve_Status = 'Approved'  ";
+        if (!empty($conditions)) {
+            $sql.=" AND " . join(" AND ", $conditions);
+        }
+        $sql .= "  GROUP BY Doctor_Id,VEEVA_Employee_ID
+                    ) AS rp 
+                    INNER JOIN `Employee_Doc` ed 
+                      ON rp.`Doctor_Id` = ed.`VEEVA_Account_ID` AND ed.VEEVA_Employee_ID = rp.VEEVA_Employee_ID AND ed.Status = 1              
+                    INNER JOIN `Doctor_Master` dm 
+                      ON dm.`Account_ID` = rp.`Doctor_Id` 
+                    INNER JOIN `Employee_Master` em 
+                      ON rp.`VEEVA_Employee_ID` = em.`VEEVA_Employee_ID` 
+                    LEFT JOIN 
+                      (SELECT 
+                      
+                        SUM(CASE WHEN Activity_Done = 'Yes' THEN 1 ELSE 0 END ) AS Actual_Rx,`VEEVA_Employee_ID`,Doctor_Id,MONTH,YEAR
+                      FROM
+                        `Activity_Reporting` 
+                      WHERE YEAR = '$year' 
+                        AND Product_id = {$product} AND Approve_Status = 'Approved'  ";
+        if (!empty($conditions)) {
+            $sql.=" AND " . join(" AND ", $conditions);
+        }
+        $sql .= "  GROUP BY `Doctor_Id`,`VEEVA_Employee_ID`) AS rx 
+                      ON rp.`VEEVA_Employee_ID` = rx.`VEEVA_Employee_ID` 
+                      AND rp.`Doctor_Id` = rx.`Doctor_Id` ";
+
+        $sql.=" ";
+        $query = $this->db->query($sql);
+        //echo $sql . "<br/>";
+
+        return $query->result();
     }
 
 }

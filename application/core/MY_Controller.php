@@ -21,6 +21,7 @@ class MY_Controller extends CI_Controller {
     public $Cycle;
     public $Product_List;
     public $Territory;
+    public $allowed_array = array();
 
     function __construct() {
         parent::__construct();
@@ -112,6 +113,34 @@ class MY_Controller extends CI_Controller {
         $this->nextMonth = $result[0];
         $this->nextYear = date('Y', strtotime($result[1]));
         return $result[1];
+    }
+
+    function allowedAccess() {
+        if ($this->is_logged_in('BDM')) {
+            $sql = "SELECT DISTINCT(`VEEVA_Account_ID`) as allowed_data FROM `Employee_Master` WHERE `VEEVA_Employee_ID` = '$this->VEEVA_Employee_ID' ";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+
+            if (!empty($result)) {
+                foreach ($result as $value) {
+                    $this->allowed_array['doctor_id'][] = $value->allowed_data;
+                }
+            }
+
+            $this->allowed_array['zone'] = array($this->Zone);
+            $this->allowed_array['territory'] = $this->Territory;
+            $this->allowed_array['division'] = $this->Division;
+            $this->allowed_array['reporting_veeva_id'] = $this->Reporting_VEEVA_ID;
+            if (strtolower($this->Division) == 'thrombi') {
+                $this->allowed_array['product_id'] = array(1, 2, 3);
+            } elseif (strtolower($this->Division) == 'diabetes') {
+                $this->allowed_array['product_id'] = array(4, 5, 6);
+            }
+        }
+    }
+
+    function checkAccess($value = "") {
+        
     }
 
 }

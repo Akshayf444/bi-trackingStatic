@@ -197,7 +197,7 @@ class asm_model extends CI_Model {
                           Employee_Master 
                       WHERE Reporting_VEEVA_ID = '$this->VEEVA_Employee_ID') AND d.Individual_Type = '$Individual_Type' ) AS dm 
                 ON em.VEEVA_Employee_ID = dm.VEEVA_Employee_ID 
-                LEFT JOIN (SELECT SUM(Planned_Rx) AS Planned_Rx,Doctor_Id,VEEVA_Employee_ID,Planning_Status,Approve_Status FROM  `Rx_Planning` WHERE month = {$this->nextMonth} AND Product_Id = {$Product_Id} AND Year = '$this->nextYear' GROUP BY VEEVA_Employee_ID,Doctor_Id ) rp 
+                LEFT JOIN (SELECT SUM(Planned_Rx) AS Planned_Rx,Doctor_Id,VEEVA_Employee_ID,Planning_Status,Approve_Status FROM  `Rx_Planning` WHERE month = {$this->nextMonth} AND Planned_Rx > 0 AND Product_Id = {$Product_Id} AND Year = '$this->nextYear' GROUP BY Doctor_Id,VEEVA_Employee_ID ) rp 
                   ON rp.`Doctor_Id` = dm.`Account_ID` 
                   AND em.`VEEVA_Employee_ID` = rp.`VEEVA_Employee_ID`    
               GROUP BY em.`VEEVA_Employee_ID` ";
@@ -206,7 +206,7 @@ class asm_model extends CI_Model {
         return $query->result();
     }
 
-    function ActivityPlanningStatus($Product_Id,$month) {
+    function ActivityPlanningStatus($Product_Id, $month) {
         if ($Product_Id == 1) {
             $Individual_Type = 'Hospital';
         } else {
@@ -326,7 +326,7 @@ class asm_model extends CI_Model {
         return $query->result();
     }
 
-    function RxReportingStatus($Product_Id, $VEEVA_Employee_Id,$month="") {
+    function RxReportingStatus($Product_Id, $VEEVA_Employee_Id, $month = "") {
         $sql = "SELECT 
                 SUM(
                   CASE

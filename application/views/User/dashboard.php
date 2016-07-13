@@ -41,6 +41,9 @@ if (isset($_GET['Product_Id'])) {
 
         foreach ($productlist as $product) {
             $Product_id = $product->id;
+            $rx = $Product_id == 1 ? 'Vials' : 'Rx';
+            $hos = $Product_id == 1 ? 'Hospital' : 'Doctor';
+            
             $this->Product_Id = $Product_id;
             //echo $Product_id;
             $Planned_count = 0;
@@ -49,10 +52,10 @@ if (isset($_GET['Product_Id'])) {
             $Activity_report = 0;
             $condition = array();
             // $condition[0] = "rp.Product_id = " . $Product_id;
-            if ($Product_id == 1){
+            if ($Product_id == 1) {
                 $this->Individual_Type = 'Hospital';
             }
-            
+
             if (isset($this->Zone) && $this->Zone != '' && $this->Zone != '-1') {
                 $condition[1] = "em.Zone = '" . $this->Zone . "'";
             }
@@ -98,7 +101,7 @@ if (isset($_GET['Product_Id'])) {
             $monthData1 = array();
             $monthData2 = array();
             $monthData3 = array();
-            
+
             for ($i = 1; $i <= 12; $i++) {
                 $monthname = date('M', mktime(0, 0, 0, $i, 1, date('Y'))); //Month Name
                 array_push($xAxisData1, $monthname);
@@ -192,7 +195,7 @@ if (isset($_GET['Product_Id'])) {
                     <div class="info-box bg-red">
                         <span class="info-box-icon"><i class="fa fa-file-text-o"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Reported Rx</span>
+                            <span class="info-box-text">Reported <?php echo $rxlabel; ?></span>
                             <span class="info-box-number"><?php
                                 echo $Actual_count;
                                 ?></span>
@@ -271,7 +274,7 @@ if (isset($_GET['Product_Id'])) {
                     <div class="panel panel-default">
                         <div class="panel-body ">
                             <div class="col-xs-8">
-                                <h4>KPI 1 </h4><p>(Reported Rx / Target) </p> <label class="badge label-danger"><?php echo $Actual_count ?> / <?php echo $target ?></label>
+                                <h4>KPI 1 </h4><p>(Reported <?php echo $rxlabel; ?> / Target) </p> <label class="badge label-danger"><?php echo $Actual_count ?> / <?php echo $target ?></label><label class="badge">= <?php echo number_format($kpi1,2)." %";?></label>
                             </div>
                             <div class="col-xs-4">
                                 <input type="text" readonly="readonly" style="display: none"  data-angleOffset=-125 data-angleArc=250 value="<?php echo $kpi1; ?>" id="dial1">
@@ -291,7 +294,7 @@ if (isset($_GET['Product_Id'])) {
                     <div class="panel panel-default">
                         <div class="panel-body ">
                             <div class="col-xs-8">
-                                <h4>KPI 2 </h4><p>(Doctor Engaged in Activity / Planned )</p> <label class="badge label-primary"><?php echo $Activity_report ?> / <?php echo $Activity_count ?></label>
+                                <h4>KPI 2 </h4><p>(<?php echo $hospital; ?> Engaged in Activity / Planned )</p> <label class="badge label-primary"><?php echo $Activity_report ?> / <?php echo $Activity_count ?></label><label class="badge">= <?php echo number_format($kpi2,2)." %";?></label>
                             </div>
                             <div class="col-xs-4">
                                 <input type="text" readonly="readonly" style="display: none"  data-angleOffset=-125 data-angleArc=250 value="<?php echo $kpi2; ?>" id="dial2">
@@ -312,7 +315,7 @@ if (isset($_GET['Product_Id'])) {
                 $(function () {
                     $('#container1').highcharts({
                         title: {
-                            text: 'Prescription Trends',
+                            text: '<?php echo $rxlabel; ?> Trends',
                             x: -20 //center
                         },
                         xAxis: {
@@ -337,10 +340,10 @@ if (isset($_GET['Product_Id'])) {
                             borderWidth: 0
                         },
                         series: [{
-                                name: 'Planned Rx',
+                                name: 'Planned <?php echo $rxlabel; ?>',
                                 data: <?php echo json_encode($monthData, JSON_NUMERIC_CHECK) ?>
                             }, {
-                                name: 'Actual Rx',
+                                name: 'Actual <?php echo $rxlabel; ?>',
                                 data: <?php echo json_encode($monthData1, JSON_NUMERIC_CHECK) ?>
                             }]
                     });

@@ -9,6 +9,8 @@
     <script src="<?php echo asset_url() ?>js/bootstrap.min_1.js" type="text/javascript"></script>
     <link href="<?php echo asset_url() ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
+    <link href="<?php echo asset_url() ?>js/videogal/ekko-lightbox.min.css" rel="stylesheet" type="text/css"/>
+    <script src="<?php echo asset_url() ?>js/videogal/ekko-lightbox.min.js" type="text/javascript"></script>
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>

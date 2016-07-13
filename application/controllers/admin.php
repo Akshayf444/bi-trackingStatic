@@ -291,8 +291,10 @@ class Admin extends MY_Controller {
                         } else {
                             unset($data['Password']);
                             unset($data['password_status']);
+                            unset($data['Username']);
                             unset($data['Last_Login']);
-                            unset($data['Password']);
+                            unset($data['Mobile']);
+                            unset($data['DOB']);
                             $this->db->where(array('VEEVA_Employee_ID' => $row['0']));
                             $this->db->update('Employee_Master', $data);
                         }

@@ -44,7 +44,7 @@ class User_model extends CI_Model {
 
     public function Rx_Target_month($VEEVA_Employee_ID, $Product_Id, $month_start, $year) {
         $sql = "SELECT * FROM Rx_Target
-                WHERE Month = $month_start
+                WHERE Month = {$month_start}
                 AND `VEEVA_Employee_ID`='$VEEVA_Employee_ID' AND `Product_Id`= '$Product_Id' And Year='$year' AND Status = 'Submitted' ";
         $query = $this->db->query($sql);
         //echo $this->db->last_query();
@@ -423,7 +423,7 @@ class User_model extends CI_Model {
 
     function generatePlanningTab($type = 'Planning', $priority = 'false', $doctor_ids = array()) {
         $result1 = $this->Rx_Target_month($this->VEEVA_Employee_ID, $this->Product_Id, $this->nextMonth, $this->nextYear);
-
+        //var_dump($result1);
         if (isset($result1->target) && $result1->target > 0) {
             if ($priority == 'true') {
                 $result = $this->User_model->getPlanning2($this->VEEVA_Employee_ID, $this->Product_Id, $this->nextMonth, $this->nextYear, 'true', $doctor_ids);
@@ -783,11 +783,9 @@ class User_model extends CI_Model {
     }
 
     function PlanningExist($Doctor_Id = "") {
-        $this->db->select('*');
-        $this->db->from('Rx_Planning');
-        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => $this->nextMonth, 'Year' => $this->nextYear));
-        $query = $this->db->get();
-        //echo $this->db->last_query();
+        $sql = " SELECT * FROM (`Rx_Planning`) WHERE `Product_Id` = {$this->Product_Id} AND `VEEVA_Employee_ID` = '$this->VEEVA_Employee_ID' AND `Doctor_Id` = '$Doctor_Id' AND `month` = {$this->nextMonth} AND `Year` = '$this->nextYear' ";
+        $query = $this->db->query($sql);
+        // echo $sql;
         return $query->row();
     }
 
@@ -1147,7 +1145,7 @@ class User_model extends CI_Model {
     function ActivityPlanned($Doctor_Id = "") {
         $this->db->select('*');
         $this->db->from('Activity_Planning');
-        $this->db->where(array('Product_Id' => $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => (int) $this->nextMonth, 'Year' => $this->nextYear));
+        $this->db->where(array('Product_Id' => (int) $this->Product_Id, 'VEEVA_Employee_ID' => $this->VEEVA_Employee_ID, 'Doctor_Id' => $Doctor_Id, 'month' => (int) $this->nextMonth, 'Year' => $this->nextYear));
         $query = $this->db->get();
         return $query->row();
     }
@@ -2496,20 +2494,20 @@ class User_model extends CI_Model {
         $query = $this->db->query($sql);
         return $query->result();
     }
-          public  function actilyse_id($id){
-                $sql="Select * from Actilyse_data where Actilyse_id='$id'";
-                $query=$this->db->query($sql);
-                return $query->row();
-            }
-            public function insert_actilyse($data){
-                $this->db->insert('Actilyse_data',$data);
-               
-                  
-                
-            }
-            public function update_actilyse($data,$id){
-                $sql=$this->db->where('Actilyse_id',$id);
-                $sql=$this->db->update('Actilyse_data',$data);
-               
-            }
+
+    public function actilyse_id($id) {
+        $sql = "Select * from Actilyse_data where Actilyse_id='$id'";
+        $query = $this->db->query($sql);
+        return $query->row();
+    }
+
+    public function insert_actilyse($data) {
+        $this->db->insert('Actilyse_data', $data);
+    }
+
+    public function update_actilyse($data, $id) {
+        $sql = $this->db->where('Actilyse_id', $id);
+        $sql = $this->db->update('Actilyse_data', $data);
+    }
+
 }
